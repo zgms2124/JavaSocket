@@ -10,137 +10,144 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends JFrame {
 	public Login() {
-		this.setTitle("èŠå¤©å®¤ç™»å½•");
+		this.setTitle("ÁÄÌìÊÒµÇÂ¼");
 		this.setSize(550, 420);
 		
-		//è®¾ç½®é»˜è®¤çª—ä½“åœ¨å±å¹•ä¸­å¤®
+		//ÉèÖÃÄ¬ÈÏ´°ÌåÔÚÆÁÄ»ÖĞÑë
         int x = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int y = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.setLocation((x - this.getWidth()) / 2, (y-this.getHeight())/ 2);
-        this.setResizable(false);  //ä¸å¯æ‹–å¤§æ‹–å°
+        this.setResizable(false);  //²»¿ÉÍÏ´óÍÏĞ¡
 
-        //æ·»åŠ èƒŒæ™¯å›¾ç‰‡
-        ImageIcon image = new ImageIcon("static/login.png");
+        //Ìí¼Ó±³¾°Í¼Æ¬
+        ImageIcon image = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\login.png");
         Image img = image.getImage();
-        img = img.getScaledInstance(550, 330, Image.SCALE_DEFAULT); //åˆ›å»ºæ­¤å›¾åƒçš„ç¼©æ”¾ç‰ˆæœ¬,è‡ªé€‚åº”å¤§å°ï¼Œé»˜è®¤å›¾åƒç¼©æ”¾ç®—æ³•
+        img = img.getScaledInstance(550, 330, Image.SCALE_DEFAULT); //´´½¨´ËÍ¼ÏñµÄËõ·Å°æ±¾,×ÔÊÊÓ¦´óĞ¡£¬Ä¬ÈÏÍ¼ÏñËõ·ÅËã·¨
         image.setImage(img);
         JLabel imgLabel = new JLabel(image);
         imgLabel.setPreferredSize(new Dimension(550,150));
         this.add(imgLabel, BorderLayout.NORTH);
 
-        //ç™»å½•ä¿¡æ¯é¢æ¿
+        //µÇÂ¼ĞÅÏ¢Ãæ°å
         JPanel mainPanel = new JPanel();
-        Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED); //èš€åˆ»è¾¹æ¡†
-        mainPanel.setBorder(BorderFactory.createTitledBorder(border, "è¾“å…¥ç™»å½•ä¿¡æ¯", TitledBorder.CENTER,TitledBorder.TOP));  //æ ‡é¢˜åœ¨æœ€ä¸Šæ–¹æ­£ä¸­é—´
-        ((TitledBorder) mainPanel.getBorder()).setTitleFont(new Font("å®‹ä½“", Font.BOLD, 16)); //è®¾ç½®æ ‡é¢˜çš„å­—ä½“
+        Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED); //Ê´¿Ì±ß¿ò
+        mainPanel.setBorder(BorderFactory.createTitledBorder(border, "ÊäÈëµÇÂ¼ĞÅÏ¢", TitledBorder.CENTER,TitledBorder.TOP));  //±êÌâÔÚ×îÉÏ·½ÕıÖĞ¼ä
+        ((TitledBorder) mainPanel.getBorder()).setTitleFont(new Font("ËÎÌå", Font.BOLD, 16)); //ÉèÖÃ±êÌâµÄ×ÖÌå
         this.add(mainPanel, BorderLayout.CENTER);
         mainPanel.setLayout(null);
         
-        //è´¦å·è¾“å…¥åŒº
-        JLabel nameLabel = new JLabel("è´¦æˆ·:");
+        //ÕËºÅÊäÈëÇø
+        JLabel nameLabel = new JLabel("ÕË»§:");
         nameLabel.setBounds(90, 40, 50, 40);
-        nameLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        nameLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         mainPanel.add(nameLabel);
         JTextField userIdField = new JTextField();
         userIdField.setBounds(137, 40, 275, 35);
-        userIdField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        userIdField.requestFocusInWindow(); //ç”¨æˆ·åè·å¾—ç„¦ç‚¹
+        userIdField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        userIdField.requestFocusInWindow(); //ÓÃ»§Ãû»ñµÃ½¹µã
         mainPanel.add(userIdField);
         
-        //å¯†ç è¾“å…¥åŒº
-        JLabel pwdLabel = new JLabel("å¯†ç :");
+        //ÃÜÂëÊäÈëÇø
+        JLabel pwdLabel = new JLabel("ÃÜÂë:");
         pwdLabel.setBounds(90, 100, 50, 40);
-        pwdLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        pwdLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         mainPanel.add(pwdLabel);
         JPasswordField passwordField = new JPasswordField();
         passwordField.setBounds(137, 100, 275, 35);
         mainPanel.add(passwordField);
         nameLabel.setPreferredSize(new Dimension(550,200));
 
-        //æŒ‰é’®é¢æ¿
+        //°´Å¥Ãæ°å
         JPanel btnPanel = new JPanel();
         btnPanel.setPreferredSize(new Dimension(550,50));
-        btnPanel.setLayout(null);  //è®¾ç½®è‡ªå®šä¹‰ç©ºå¸ƒå±€
+        btnPanel.setLayout(null);  //ÉèÖÃ×Ô¶¨Òå¿Õ²¼¾Ö
         this.add(btnPanel, BorderLayout.SOUTH);
         btnPanel.setBorder(new EmptyBorder(2, 8, 4, 8));
         
-        //æ³¨å†Œè´¦å·æŒ‰é’®
-        JButton registerBtn = new JButton("æ³¨å†Œè´¦å·");
+        //×¢²áÕËºÅ°´Å¥
+        JButton registerBtn = new JButton("×¢²áÕËºÅ");
         registerBtn.setBounds(0, 20, 100, 30);
-        registerBtn.setFocusPainted(false);  //å»ç„¦ç‚¹
-        registerBtn.setForeground(Color.gray); //è®¾ç½®å­—ä½“é¢œè‰²
-        registerBtn.setContentAreaFilled(false); //å‡ºå»é»˜è®¤èƒŒæ™¯
+        registerBtn.setFocusPainted(false);  //È¥½¹µã
+        registerBtn.setForeground(Color.gray); //ÉèÖÃ×ÖÌåÑÕÉ«
+        registerBtn.setContentAreaFilled(false); //³öÈ¥Ä¬ÈÏ±³¾°
         
-        //ç™»å½•æŒ‰é’®
-        JButton submitBtn = new JButton("ç™»å½•");
+        //µÇÂ¼°´Å¥
+        JButton submitBtn = new JButton("µÇÂ¼");
         submitBtn.setBounds(205, 5, 140, 40);
         submitBtn.setFocusPainted(false);
         submitBtn.setBackground(new Color(27, 127, 176));
-        submitBtn.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        submitBtn.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         submitBtn.setForeground(Color.white);
         
-        //æ·»åŠ æŒ‰é’®åˆ°é¢æ¿
+        //Ìí¼Ó°´Å¥µ½Ãæ°å
         btnPanel.add(registerBtn);
         btnPanel.add(submitBtn);
 
-        //æ³¨å†ŒæŒ‰é’®ç›‘å¬äº‹ä»¶
-        registerBtn.addActionListener(e -> new Register());  //æ‰“å¼€æ³¨å†Œç•Œé¢
+        //×¢²á°´Å¥¼àÌıÊÂ¼ş
+        registerBtn.addActionListener(e -> new Register());  //´ò¿ª×¢²á½çÃæ
 
-        //ç™»å½•æŒ‰é’®ç›‘å¬äº‹ä»¶
+        //µÇÂ¼°´Å¥¼àÌıÊÂ¼ş
         submitBtn.addActionListener(e -> this.login(userIdField, passwordField));
-        this.setVisible(true); //è®¾ç½®é¢æ¿å¯è§
+        this.setVisible(true); //ÉèÖÃÃæ°å¿É¼û
 	}
 	
 	private void login(JTextField userID, JPasswordField password){
-        //è¾“å…¥ä¸ºç©º
+        //ÊäÈëÎª¿Õ
         if (userID.getText().length() == 0 || password.getPassword().length == 0){
-            JOptionPane.showMessageDialog(Login.this,"è´¦å·æˆ–å¯†ç ä¸èƒ½ä¸ºç©ºï¼","è¾“å…¥æœ‰è¯¯",JOptionPane.ERROR_MESSAGE);
-            userID.requestFocusInWindow();  //è·å¾—ç„¦ç‚¹
+            JOptionPane.showMessageDialog(Login.this,"ÕËºÅ»òÃÜÂë²»ÄÜÎª¿Õ£¡","ÊäÈëÓĞÎó",JOptionPane.ERROR_MESSAGE);
+            userID.requestFocusInWindow();  //»ñµÃ½¹µã
             return ;
         }
-        //è´¦å·æ ¼å¼æœ‰è¯¯î‡¤
-        if (!userID.getText().matches("\\d+")){  //æ­£åˆ™è¡¨è¾¾å¼åŒ¹é…
-            JOptionPane.showMessageDialog(Login.this,"è´¦å·å¿…é¡»å…¨æ˜¯æ•°å­—ï¼","è¾“å…¥æœ‰è¯¯",JOptionPane.ERROR_MESSAGE);
-            userID.setText("");  //é‡ç½®
+        //ÕËºÅ¸ñÊ½ÓĞÎó¯¯
+        if (!userID.getText().matches("\\d+")){  //ÕıÔò±í´ïÊ½Æ¥Åä
+            JOptionPane.showMessageDialog(Login.this,"ÕËºÅ±ØĞëÈ«ÊÇÊı×Ö£¡","ÊäÈëÓĞÎó",JOptionPane.ERROR_MESSAGE);
+            userID.setText("");  //ÖØÖÃ
             userID.requestFocusInWindow();
             return ;
         }
         
-        //ç»™å‡ºæ–°çº¿ç¨‹å¤„ç†ç™»å½•
+        //¸ø³öĞÂÏß³Ì´¦ÀíµÇÂ¼
         new Thread(() -> {
             Request request = new Request(RequestType.SIGN_IN);
             request.addData("userID", userID.getText());
             request.addData("password", new String(password.getPassword()));
             Response response = null;
             try {
-                System.out.println("æ­£åœ¨å‘é€");
+                System.out.println("ÕıÔÚ·¢ËÍ");
                 response = ClientSendRequest.sendForResponse(request);
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
-            System.out.println("æˆåŠŸä¸æœåŠ¡å™¨è¿›è¡Œé€šä¿¡");
+            System.out.println("³É¹¦Óë·şÎñÆ÷½øĞĞÍ¨ĞÅ");
             if (response == null) {
-                JOptionPane.showMessageDialog(Login.this,"æœåŠ¡å™¨æœªè¿æ¥ï¼Œç›®å‰æ— æ³•ç™»å½•ï¼Œè¯·ç¨åé‡è¯•ï¼","ç½‘ç»œé”™è¯¯", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(Login.this,"·şÎñÆ÷Î´Á¬½Ó£¬Ä¿Ç°ÎŞ·¨µÇÂ¼£¬ÇëÉÔºóÖØÊÔ£¡","ÍøÂç´íÎó", JOptionPane.ERROR_MESSAGE);
             } else if (response.getResponseStatus() == ResponseStatus.OK) {  
                 if (response.getResponseType() == ResponseType.SUCCESS_SIGN_IN) {
-                    JOptionPane.showMessageDialog(Login.this,"æ¬¢è¿å›æ¥ï¼","ç™»å½•æˆåŠŸ", JOptionPane.INFORMATION_MESSAGE);
-                    SingleBuffer.setUserInfo((UserInfo) response.getDataByKey("userInfo"));  //è®¾ç½®ç¼“å­˜
+                    JOptionPane.showMessageDialog(Login.this,"»¶Ó­»ØÀ´£¡","µÇÂ¼³É¹¦", JOptionPane.INFORMATION_MESSAGE);
+                    SingleBuffer.setUserInfo((UserInfo) response.getDataByKey("userInfo"));  //ÉèÖÃ»º´æ
                     SingleBuffer.setFriends((ArrayList<UserInfo>) response.getDataByKey("userFriends"));
                     SingleBuffer.setOnlineFriends((ArrayList<UserInfo>) response.getDataByKey("userOnlineFriends"));
-                    this.dispose();//å…³é—­ç™»å½•é¡µé¢
-                    ClientFrame mainFrame = new ClientFrame(); //è¿›å…¥èŠå¤©é¡µé¢
+                    ArrayList<GroupInfo> groups=new ArrayList<>();
+                    Object res = response.getDataByKey("groups");
+
+                    // Now you have a combined list of GroupInfo, set it in SingleBuffer
+                    SingleBuffer.setGroupChats((ArrayList<GroupInfo>) response.getDataByKey("groups"));
+                    this.dispose();//¹Ø±ÕµÇÂ¼Ò³Ãæ
+                    ClientFrame mainFrame = new ClientFrame(); //½øÈëÁÄÌìÒ³Ãæ
                 } else if (response.getResponseType() == ResponseType.WRONG_ID) {
-                    JOptionPane.showMessageDialog(Login.this,"è´¦æˆ·ä¸å­˜åœ¨ï¼Œè¯·æ£€æŸ¥è´¦æˆ·æ˜¯å¦æ­£ç¡®ï¼","è´¦æˆ·é”™è¯¯", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Login.this,"ÕË»§²»´æÔÚ£¬Çë¼ì²éÕË»§ÊÇ·ñÕıÈ·£¡","ÕË»§´íÎó", JOptionPane.ERROR_MESSAGE);
                 } else if (response.getResponseType() == ResponseType.WRONG_PWD) {
-                    JOptionPane.showMessageDialog(Login.this,"å¯†ç é”™è¯¯ï¼Œè¯·æ£€æŸ¥å¯†ç æ˜¯å¦æ­£ç¡®ï¼","å¯†ç é”™è¯¯", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Login.this,"ÃÜÂë´íÎó£¬Çë¼ì²éÃÜÂëÊÇ·ñÕıÈ·£¡","ÃÜÂë´íÎó", JOptionPane.ERROR_MESSAGE);
                 } else if(response.getResponseType() == ResponseType.SECOND_LOGIN){
-                    JOptionPane.showMessageDialog(Login.this,"æ­¤è´¦å·å·²ç»ç™»å½•ï¼Œä¸èƒ½é‡å¤ç™»å½•ï¼","é‡å¤ç™»å½•", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Login.this,"´ËÕËºÅÒÑ¾­µÇÂ¼£¬²»ÄÜÖØ¸´µÇÂ¼£¡","ÖØ¸´µÇÂ¼", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {  //æ— å“åº”
-                JOptionPane.showMessageDialog(Login.this,"æœåŠ¡å™¨æœªè¿æ¥ï¼Œç›®å‰æ— æ³•ç™»å½•ï¼Œè¯·ç¨åé‡è¯•","ç½‘ç»œé”™è¯¯", JOptionPane.ERROR_MESSAGE);
+            } else {  //ÎŞÏìÓ¦
+                JOptionPane.showMessageDialog(Login.this,"·şÎñÆ÷Î´Á¬½Ó£¬Ä¿Ç°ÎŞ·¨µÇÂ¼£¬ÇëÉÔºóÖØÊÔ","ÍøÂç´íÎó", JOptionPane.ERROR_MESSAGE);
             }
         }).start();
     }

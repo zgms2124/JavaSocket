@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ListeningThread extends Thread{
-    private final ClientFrame curFrame;  //å½“å‰çª—ä½“
+    private final ClientFrame curFrame;  //µ±Ç°´°Ìå
 
     public ListeningThread(ClientFrame frame){
         curFrame = frame;
@@ -23,33 +23,59 @@ public class ListeningThread extends Thread{
                     Response response = (Response) SingleBuffer.getOis().readObject();
                     switch (response.getResponseType()){
                         case SYSTEM_NOTICE:
-                            System.out.println("ç³»ç»Ÿé€šçŸ¥");
+                            System.out.println("ÏµÍ³Í¨Öª");
                             dealSystemNotice(response);
                             break;
                         case FORCED_OFFLINE:
-                            System.out.println("å¼ºåˆ¶ä¸‹çº¿");
+                            System.out.println("Ç¿ÖÆÏÂÏß");
                             dealForcedLogout();
                             break;
                         case FRIEND_LOGIN:
-                            System.out.println("å¥½å‹ä¸Šçº¿");
+                            System.out.println("ºÃÓÑÉÏÏß");
                             dealFriendLogin(response);
                             break;
                         case FRIEND_LOGOUT:
-                            System.out.println("å¥½å‹ä¸‹çº¿");
+                            System.out.println("ºÃÓÑÏÂÏß");
                             dealFriendLogout(response);
                             break;
                         case SEND_MESSAGE:
-                            System.out.println("å¤„ç†èŠå¤©æ¶ˆæ¯");
+                            System.out.println("´¦ÀíÁÄÌìÏûÏ¢");
                             dealMessage(response);
                             break;
                         case ADD_FRIEND:
-                            System.out.println("å¤„ç†æ·»åŠ å¥½å‹è¯·æ±‚");
+                            System.out.println("´¦Àí±»Ìí¼ÓºÃÓÑÇëÇó");
                             dealAddFriendRequest(response);
                             break;
-                        case WRONG_ID:
+                        case ADD_GROUP:
+                            System.out.println("´¦Àí±»Ìí¼ÓÈº×éÇëÇó");
+                            dealAddGroupRequest(response);
+                            break;
                         case SUCCESS_ADD:
-                            System.out.println("å¤„ç†æ·»åŠ å¥½å‹å“åº”");
+                            System.out.println("´¦Àí³É¹¦Ìí¼ÓºÃÓÑÏìÓ¦");
                             dealAddFriendResponse(response);
+                            break;
+                        case SUCCESS_ADD_GROUP:
+                            System.out.println("´¦Àí³É¹¦Ìí¼ÓÈº×éÏìÓ¦");
+                            // Handle case where adding to group is successful
+                            dealAddGroupResponse(response);
+                            break;
+//                        case REFUSE_ADD:
+//                            System.out.println("´¦ÀíÌí¼ÓºÃÓÑÏìÓ¦£¨²»Í¬Òâ£©");
+//                            dealAddFriendResponse(response);
+//                            break;
+//                        case REFUSE_ADD_GROUP:
+//                            System.out.println("´¦ÀíÌí¼ÓÈº×éÏìÓ¦£¨²»Í¬Òâ£©");
+//                            // Handle case where adding to group is successful
+//                            dealAddGroupResponse(response);
+//                            break;
+                        case WRONG_ID:
+                            System.out.println("´¦ÀíÌí¼ÓºÃÓÑÏìÓ¦£¨ºÃÓÑ²»´æÔÚ£©");
+                            dealAddFriendResponse(response);
+                            break;
+                        case WRONG_GROUP_ID:
+                            System.out.println("´¦ÀíÌí¼ÓÈº×éµÄ´íÎóÏìÓ¦£¨Èº×é²»´æÔÚ£©");
+                            // Handle case where the group ID is incorrect
+                            dealAddGroupResponse(response);
                             break;
                         default:
                             System.out.println("listenThread");
@@ -63,33 +89,33 @@ public class ListeningThread extends Thread{
         }).start();
     }
 
-    //å¤„ç†ç³»ç»Ÿé€šçŸ¥
+    //´¦ÀíÏµÍ³Í¨Öª
     public void dealSystemNotice(Response response){
         JOptionPane.showMessageDialog(curFrame,
                 response.getDataByKey("notice"),
-                "æœåŠ¡å™¨é€šçŸ¥", JOptionPane.INFORMATION_MESSAGE);
+                "·şÎñÆ÷Í¨Öª", JOptionPane.INFORMATION_MESSAGE);
     }
      
-    //å¤„ç†å¼ºåˆ¶ä¸‹çº¿
+    //´¦ÀíÇ¿ÖÆÏÂÏß
     public void dealForcedLogout(){
         JOptionPane.showMessageDialog(curFrame,
-                "æ‚¨å·²è¢«å¼ºåˆ¶ä¸‹çº¿",
-                "ç³»ç»Ÿé€šçŸ¥", JOptionPane.INFORMATION_MESSAGE);
+                "ÄúÒÑ±»Ç¿ÖÆÏÂÏß",
+                "ÏµÍ³Í¨Öª", JOptionPane.INFORMATION_MESSAGE);
         curFrame.dispose();
         System.exit(0);
     }
     
-    //å¤„ç†å¥½å‹ä¸Šçº¿
+    //´¦ÀíºÃÓÑÉÏÏß
     public void dealFriendLogin(Response response){
         DefaultTableModel friendsTableModel = curFrame.getFriendsTableModel();
         UserInfo loginFriend = (UserInfo) response.getDataByKey("userInfo");
-        SingleBuffer.getOnlineFriends().add(loginFriend); //åœ¨çº¿ç¼“å­˜ä¸­æ·»åŠ è¯¥ç”¨æˆ·
+        SingleBuffer.getOnlineFriends().add(loginFriend); //ÔÚÏß»º´æÖĞÌí¼Ó¸ÃÓÃ»§
         if (curFrame.getCurSendToUserID() != null && curFrame.getCurSendToUserID().equals(loginFriend.getUserID())){
-            curFrame.setCurSendToUserState("åœ¨çº¿");
-            curFrame.getSendTargetField1().setText("å¥½å‹ï¼š" + curFrame.getCurSendToUserNickname() +" åœ¨çº¿");
+            curFrame.setCurSendToUserState("ÔÚÏß");
+            curFrame.getSendTargetField1().setText("ºÃÓÑ£º" + curFrame.getCurSendToUserNickname() +" ÔÚÏß");
         }
         
-        //è®¾ç½®å¥½å‹åœ¨çº¿çŠ¶æ€
+        //ÉèÖÃºÃÓÑÔÚÏß×´Ì¬
         Vector<Vector> friends = friendsTableModel.getDataVector();
         for (int i = 0; i < friends.size(); i++) {
             Vector<String> friend = friends.get(i);
@@ -99,21 +125,21 @@ public class ListeningThread extends Thread{
             }
         }
         
-        //å¤´éƒ¨æ’å…¥
-        friendsTableModel.insertRow(0, new String[]{loginFriend.getNickName(), loginFriend.getUserID(), "åœ¨çº¿"});
+        //Í·²¿²åÈë
+        friendsTableModel.insertRow(0, new String[]{loginFriend.getNickName(), loginFriend.getUserID(), "ÔÚÏß"});
     }
 
-    //å¤„ç†å¥½å‹ä¸‹çº¿
+    //´¦ÀíºÃÓÑÏÂÏß
     public void dealFriendLogout(Response response){
         DefaultTableModel friendsTableModel = curFrame.getFriendsTableModel();
         UserInfo logoutFriend = (UserInfo) response.getDataByKey("userInfo");
-        SingleBuffer.getOnlineFriends().remove(logoutFriend);//åœ¨çº¿ç¼“å­˜ä¸­ç§»é™¤è¯¥ç”¨æˆ·
+        SingleBuffer.getOnlineFriends().remove(logoutFriend);//ÔÚÏß»º´æÖĞÒÆ³ı¸ÃÓÃ»§
         if (curFrame.getCurSendToUserID() != null && curFrame.getCurSendToUserID().equals(logoutFriend.getUserID())){
-            curFrame.setCurSendToUserState("ç¦»çº¿");
-            curFrame.getSendTargetField1().setText("å¥½å‹ï¼š" + curFrame.getCurSendToUserNickname() +" ç¦»çº¿");
+            curFrame.setCurSendToUserState("ÀëÏß");
+            curFrame.getSendTargetField1().setText("ºÃÓÑ£º" + curFrame.getCurSendToUserNickname() +" ÀëÏß");
         }
         
-        //è®¾ç½®å¥½å‹åœ¨çº¿çŠ¶æ€
+        //ÉèÖÃºÃÓÑÔÚÏß×´Ì¬
         Vector<Vector> friends = friendsTableModel.getDataVector();
         for (int i = 0; i < friends.size(); i++) {
             Vector<String> friend = friends.get(i);
@@ -122,11 +148,11 @@ public class ListeningThread extends Thread{
                 break;
             }
         }
-        //å°¾éƒ¨æ’å…¥
-        friendsTableModel.insertRow(friendsTableModel.getRowCount(), new String[]{logoutFriend.getNickName(), logoutFriend.getUserID(), "ç¦»çº¿"});
+        //Î²²¿²åÈë
+        friendsTableModel.insertRow(friendsTableModel.getRowCount(), new String[]{logoutFriend.getNickName(), logoutFriend.getUserID(), "ÀëÏß"});
     }
     
-    //å¤„ç†èŠå¤©æ¶ˆæ¯
+    //´¦ÀíÁÄÌìÏûÏ¢
     public void dealMessage(Response response){
         Object message = response.getDataByKey("msg");
         if (message instanceof P2PMessage){
@@ -136,50 +162,108 @@ public class ListeningThread extends Thread{
                 curFrame.getMessageShowArea1().append(message.toString());
             }
             JOptionPane.showMessageDialog(curFrame,
-                    ((P2PMessage) message).getSendUserID() + "ç»™æ‚¨å‘æ¥æ¶ˆæ¯",
-                    "æ–°æ¶ˆæ¯", JOptionPane.INFORMATION_MESSAGE);
-        } else if (message instanceof GroupMessage){
+                    ((P2PMessage) message).getSendUserID() + "¸øÄú·¢À´ÏûÏ¢",
+                    "ĞÂÏûÏ¢", JOptionPane.INFORMATION_MESSAGE);
+        } else if (message instanceof BoardMessage){
             curFrame.getMessageShowArea2().append(message.toString());
             JOptionPane.showMessageDialog(curFrame,
-                    "ç¾¤èŠæœ‰æ–°æ¶ˆæ¯",
-                    "æ–°æ¶ˆæ¯", JOptionPane.INFORMATION_MESSAGE);
+                    "¹ã²¥ÓĞĞÂÏûÏ¢",
+                    "ĞÂÏûÏ¢", JOptionPane.INFORMATION_MESSAGE);
+        }else if (message instanceof GroupMessage){
+            StringBuilder curSb = SingleBuffer.getGroupChatMessageHistory().get(((GroupMessage) message).getGroupID());
+            curSb.append(message.toString());
+//            if (curFrame.getCurGroupID() != null && curFrame.getCurGroupID().equals(((GroupMessage) message).getSendUserID())) {
+            curFrame.getMessageShowArea3().append(message.toString());
+//            }
+//                }
+//            }
+            JOptionPane.showMessageDialog(curFrame,
+                    "Èº " + ((GroupMessage) message).getGroupID() + " ÓĞĞÂÏûÏ¢",
+                    "ĞÂÏûÏ¢", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
-    //å¤„ç†æ·»åŠ å¥½å‹è¯·æ±‚
+    //´¦ÀíÌí¼ÓºÃÓÑÇëÇó
     public void dealAddFriendRequest(Response response){
         UserInfo user = (UserInfo) response.getDataByKey("userInfo");
         SingleBuffer.getFriends().add(user);
         SingleBuffer.getOnlineFriends().add(user);
         SingleBuffer.getP2pMessageHistory().put(user.getUserID(), new StringBuilder());
-        curFrame.getFriendsTableModel().insertRow(0, new String[]{user.getNickName(), user.getUserID(), "åœ¨çº¿"});
+        curFrame.getFriendsTableModel().insertRow(0, new String[]{user.getNickName(), user.getUserID(), "ÔÚÏß"});
         JOptionPane.showMessageDialog(curFrame,
-                user.getNickName() + "æ·»åŠ æ‚¨ä¸ºå¥½å‹",
-                "æ–°å¥½å‹", JOptionPane.INFORMATION_MESSAGE);
+                user.getNickName() + "Ìí¼ÓÄúÎªºÃÓÑ",
+                "ĞÂºÃÓÑ", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    //´¦ÀíÊÕµ½µÄÌí¼ÓÈº×éÍ¨Öª
+    public void dealAddGroupRequest(Response response) {
+        GroupInfo groupInfo = (GroupInfo) response.getDataByKey("groupInfo");
+        // Add the group to the local cache
+//        SingleBuffer.getGroupChats().add(groupInfo);
+        // Initialize the message history for this group
+//        SingleBuffer.getGroupChatMessageHistory().put(groupInfo.getGroupId(), new StringBuilder());
+//         Update the group list table model
+//        curFrame.getGroupChatsTableModel().addRow(new String[]{groupInfo.getGroupId(), groupInfo.getGroupName()});
+        // Inform user about the new group invitation
+//        SingleBuffer.getGroupChatMessageHistory().put(groupInfo.getGroupId(), new StringBuilder());
+        JOptionPane.showMessageDialog(curFrame,
+                response.getDataByKey("fromUserID")+"ÒÑÌí¼ÓÖÁÈº×é£º" + groupInfo.getGroupName(),
+                "ĞÂÈË¼ÓÈë", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    //å¤„ç†æ·»åŠ å¥½å‹å“åº”
+    //´¦ÀíÌí¼ÓºÃÓÑÏìÓ¦
     private void dealAddFriendResponse(Response response) {
         if (response.getResponseType() == ResponseType.WRONG_ID){
             JOptionPane.showMessageDialog(curFrame,
-                    "æ­¤è´¦å·ä¸å­˜åœ¨",
-                    "é”™è¯¯è´¦å·", JOptionPane.INFORMATION_MESSAGE);
+                    "´ËÕËºÅ²»´æÔÚ",
+                    "´íÎóÕËºÅ", JOptionPane.INFORMATION_MESSAGE);
         } else if(response.getResponseType() == ResponseType.SUCCESS_ADD){
             JOptionPane.showMessageDialog(curFrame,
-                    "æˆåŠŸæ·»åŠ å¥½å‹",
-                    "æ·»åŠ æˆåŠŸ", JOptionPane.INFORMATION_MESSAGE);
+                    "³É¹¦Ìí¼ÓºÃÓÑ",
+                    "Ìí¼Ó³É¹¦", JOptionPane.INFORMATION_MESSAGE);
             SingleBuffer.getFriends().add((UserInfo) response.getDataByKey("userInfo"));
             if ((boolean) response.getDataByKey("isOnline")) {
                 SingleBuffer.getOnlineFriends().add((UserInfo) response.getDataByKey("userInfo"));
                 curFrame.getFriendsTableModel().insertRow(0, new String[]{((UserInfo) response.getDataByKey("userInfo")).getNickName(),
                         ((UserInfo) response.getDataByKey("userInfo")).getUserID(),
-                        "åœ¨çº¿"});
+                        "ÔÚÏß"});
             } else{
                 curFrame.getFriendsTableModel().insertRow(0, new String[]{((UserInfo) response.getDataByKey("userInfo")).getNickName(),
                         ((UserInfo) response.getDataByKey("userInfo")).getUserID(),
-                        "ç¦»çº¿"});
+                        "ÀëÏß"});
             }
             SingleBuffer.getP2pMessageHistory().put(((UserInfo) response.getDataByKey("userInfo")).getUserID(), new StringBuilder());
         }
+//        else if (response.getResponseType() == ResponseType.REFUSE_ADD) {
+//            JOptionPane.showMessageDialog(curFrame,
+//                    "ÄúµÄºÃÓÑÉêÇë±»¾Ü¾øÁË",
+//                    "Ìí¼ÓÊ§°Ü", JOptionPane.INFORMATION_MESSAGE);
+//        }
     }
+
+    //´¦ÀíÌí¼ÓÈº×éÇëÇóµÄÏìÓ¦
+    private void dealAddGroupResponse(Response response) {
+        if (response.getResponseType() == ResponseType.WRONG_GROUP_ID) {
+            JOptionPane.showMessageDialog(curFrame,
+                    "´ËÈº×é²»´æÔÚ",
+                    "´íÎóÈº×é", JOptionPane.INFORMATION_MESSAGE);
+        } else if (response.getResponseType() == ResponseType.SUCCESS_ADD_GROUP) {
+            GroupInfo groupInfo = (GroupInfo) response.getDataByKey("groupInfo");
+//         Update the group list table model
+            JOptionPane.showMessageDialog(curFrame,
+                    "³É¹¦¼ÓÈëÈº×é£º" + groupInfo.getGroupName(),
+                    "¼ÓÈë³É¹¦", JOptionPane.INFORMATION_MESSAGE);
+            // You might want to update your group chat list UI here
+            curFrame.getGroupChatsTableModel().insertRow(0, new String[]{groupInfo.getGroupId(), groupInfo.getGroupName()});
+            SingleBuffer.getP2pMessageHistory().put(groupInfo.getGroupId(), new StringBuilder());
+
+        }
+//      else if (response.getResponseType() == ResponseType.REFUSE_ADD_GROUP) {
+//            JOptionPane.showMessageDialog(curFrame,
+//                    "ÄúµÄ¼ÓÈºÉêÇë±»¾Ü¾øÁË",
+//                    "Ìí¼ÓÊ§°Ü", JOptionPane.INFORMATION_MESSAGE);
+//        }
+    }
+
+
 }

@@ -25,6 +25,6 @@ public enum ResponseType {
     FRIEND_LOGOUT,
     //好友上线
     FRIEND_LOGIN,
-    //添加好友
-    ADD_FRIEND
+    ADD_GROUP, //添加好友
+    FAILURE, WRONG_GROUP_ID, SUCCESS_ADD_GROUP, REFUSE_ADD, REFUSE_ADD_GROUP, ADD_FRIEND
 }

@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class Response implements Serializable {
     private static final long serialVersionUID = -1796454951694768195L;
-    private ResponseStatus responseStatus; //å“åº”çŠ¶æ€
-    private ResponseType responseType;  //å“åº”ç±»å‹
-    private Map<String, Object> dataMap;  //è¿”å›æ•°æ®
+    private ResponseStatus responseStatus; //ÏìÓ¦×´Ì¬
+    private ResponseType responseType;  //ÏìÓ¦ÀàĞÍ
+    private Map<String, Object> dataMap;  //·µ»ØÊı¾İ
 
     public Response(ResponseStatus responseStatus, ResponseType responseType) {
         this.responseStatus = responseStatus;

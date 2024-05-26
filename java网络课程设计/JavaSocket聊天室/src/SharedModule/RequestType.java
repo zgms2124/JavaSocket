@@ -11,6 +11,6 @@ public enum RequestType implements Serializable {
     SEND_MESSAGE,
     //下线
     LOG_OUT,
-    //添加好友
+    ADD_GROUP, //添加好友
     ADD_FRIEND
 }

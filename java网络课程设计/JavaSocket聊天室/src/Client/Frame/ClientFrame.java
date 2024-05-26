@@ -1,5 +1,7 @@
 package Client.Frame;
 
+
+
 import Client.Service.ClientSendRequest;
 import Client.Service.ListeningThread;
 import Client.Service.SingleBuffer;
@@ -12,15 +14,16 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
 public class ClientFrame extends JFrame {
-    private DefaultTableModel friendsTableModel;  //è¡¨æ ¼æ¨¡å‹ï¼Œå¯ä»¥å¯¹è¡¨æ ¼è¿›è¡Œå¢åˆ æ”¹
-    private JTextField phoneNumberField;
+    private DefaultTableModel friendsTableModel;  //±í¸ñÄ£ĞÍ£¬¿ÉÒÔ¶Ô±í¸ñ½øĞĞÔöÉ¾¸Ä
+    private DefaultTableModel groupChatsTableModel;
     private JTextField nicknameField;
     private JTextField sexField;
-    private JTextField sendTargetField1;  //ç§èŠåŒºåŸŸ
+    private JTextField sendTargetField1;  //Ë½ÁÄÇøÓò
     private JTextArea messageShowArea1;
     private JTextArea inputMessageArea1;
     private JTextField sendTargetField2;
@@ -29,6 +32,23 @@ public class ClientFrame extends JFrame {
     private String sendToUserID;
     private String sendToUserNickname;
     private String sendToUserState;
+    private JTextField sendTargetField3; // ÈºÁÄÇøÓò£¬ÏÔÊ¾µ±Ç°ËùÔÚµÄÈºÁÄÃû³Æ
+    private JTextArea inputMessageArea3; // ÈºÁÄĞÅÏ¢ÊäÈëÇøÓò
+    private String curGroupID; // µ±Ç°Ñ¡ÖĞµÄÈº×éID
+    private JTextArea messageShowArea3; // ÏÔÊ¾Èº×éÁÄÌì¼ÇÂ¼µÄÎÄ±¾ÇøÓò
+
+    // GetterºÍSetter·½·¨
+    public void setCurGroupID(String curGroupID) {
+        this.curGroupID = curGroupID;
+    }
+
+    public String getCurGroupID() {
+        return curGroupID;
+    }
+
+    public JTextArea getMessageShowArea3() {
+        return messageShowArea3;
+    }
     
     public static void main(String[] args) {
     	ClientFrame frame = new ClientFrame();
@@ -37,50 +57,51 @@ public class ClientFrame extends JFrame {
         this.init();
     }
     private void init(){
-        this.setTitle("èŠå¤©å®¤");
+        this.setTitle("ÁÄÌìÊÒ");
         this.setSize(900, 600);
-        //è®¾ç½®é»˜è®¤çª—ä½“åœ¨å±å¹•ä¸­å¤®
+        //ÉèÖÃÄ¬ÈÏ´°ÌåÔÚÆÁÄ»ÖĞÑë
         int x = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int y = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.setLocation((x - this.getWidth()) / 2, (y-this.getHeight()) / 2);
         this.setResizable(false);
-        this.getContentPane().setBackground(Color.BLACK); //è·å–å†…å®¹é¢æ¿
+        this.getContentPane().setBackground(Color.BLACK); //»ñÈ¡ÄÚÈİÃæ°å
 
-        //ç§èŠé¢æ¿
+        //Ë½ÁÄÃæ°å
         JPanel p2pPanel = new JPanel();
         p2pPanel.setLayout(null);
         
-        //å¥½å‹åˆ—è¡¨
-        JTable friendsTable = new JTable();
-        friendsTable.setRowHeight(30); //è®¾ç½®è¡¨æ ¼æ¯è¡Œé«˜åº¦
-        friendsTable.setEnabled(false); //è®¾ç½®è¡¨æ ¼ä¸å¯è¢«æ”¹å†™å†…å®¹
-        DefaultTableCellRenderer r = new DefaultTableCellRenderer();//è®¾ç½®è¡¨æ ¼å†…å®¹å±…ä¸­
-        r.setHorizontalAlignment(JLabel.CENTER);
-        friendsTable.setDefaultRenderer(Object.class, r);
+        //ºÃÓÑÁĞ±í
+        JTable friendsTable = new JTable();  // ´´½¨ĞÂµÄ JTable(±í¸ñ) ÊµÀı£¬´Ë±í¸ñÓÃÓÚÏÔÊ¾ºÃÓÑÁĞ±í
+        friendsTable.setRowHeight(30); // ÉèÖÃ±í¸ñµÄÃ¿Ò»ĞĞµÄ¸ß¶ÈÎª 30
+        friendsTable.setEnabled(false); // ÉèÖÃ±í¸ñ²»¿É±»¸ÄĞ´ÄÚÈİ£¬¼´±í¸ñÄÚÈİ²»¿É±à¼­
+        DefaultTableCellRenderer r = new DefaultTableCellRenderer(); // ´´½¨Ä¬ÈÏµÄ±í¸ñµ¥Ôª¸ñäÖÈ¾Æ÷ÓÃÓÚ×Ô¶¨Òåµ¥Ôª¸ñÏÔÊ¾·½Ê½
+        r.setHorizontalAlignment(JLabel.CENTER); // ÉèÖÃäÖÈ¾Æ÷Ë®Æ½¾ÓÖĞ¶ÔÆë£¬ÕâÑù±í¸ñÄÚÈİ»áÔÚµ¥Ôª¸ñÖĞ¾ÓÖĞÏÔÊ¾
+        friendsTable.setDefaultRenderer(Object.class, r); // Îª±í¸ñÖĞµÄËùÓĞÀà¶ÔÏóÉèÖÃÄ¬ÈÏµÄäÖÈ¾Æ÷
+       // ´´½¨²¢¶¨Òå±í¸ñÄ£ĞÍ¶ÔÏóµÄÊµÀı£¬ÒÔÏÂÉèÖÃ¶¨ÒåÀ²ÁĞÃûºÍ±í¸ñÊı¾İ
         friendsTableModel = new DefaultTableModel();
-        String[] friendsTableColumnNames = {"æ˜µç§°", "è´¦å·", "çŠ¶æ€"};
-        Object[][] friendsTableData = {};
-        friendsTableModel.setDataVector(friendsTableData, friendsTableColumnNames);
-        friendsTable.setModel(friendsTableModel); //æŠŠæ•°æ®è¿›è¡Œç»‘å®šï¼Œåˆ·æ–°
-        JScrollPane friendsTableScroll = new JScrollPane(friendsTable);
-        friendsTableScroll.setBounds(0, 0, 320, 600);  //æ”¹åŠ¨
-        friendsTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); //è®¾ç½®å‚ç›´æ»šåŠ¨æ¡
+        String[] friendsTableColumnNames = {"êÇ³Æ", "ÕËºÅ", "×´Ì¬"}; // ±í¸ñµÄÁĞÃû£¨ĞĞÍ·£©
+        Object[][] friendsTableData = {}; // ±í¸ñµÄÊı¾İ£¬³õÊ¼»¯Îª¿Õ
+        friendsTableModel.setDataVector(friendsTableData, friendsTableColumnNames); // °ó¶¨ĞĞÍ·ºÍÊı¾İµ½±í¸ñÄ£ĞÍ
+        friendsTable.setModel(friendsTableModel); // °Ñ±í¸ñÄ£ĞÍÊı¾İ°ó¶¨µ½±í¸ñ£¬ÕâÑù±í¸ñ¾Í»áÏÔÊ¾³öÄ£ĞÍÖĞµÄÊı¾İ
+        JScrollPane friendsTableScroll = new JScrollPane(friendsTable); // ´´½¨Ò»¸ö´ø¹ö¶¯ÌõµÄÃæ°å£¬²¢ÇÒ½«Ö®Ç°´´½¨µÄ±í¸ñ¼ÓÈëµ½Õâ¸öÃæ°åÖĞ
+        friendsTableScroll.setBounds(0, 0, 320, 600);  // ÉèÖÃÃæ°åµÄ±ß½ç´óĞ¡£¬¼´ÉèÖÃÃæ°åµÄÎ»ÖÃºÍ¿í¸ß
+        friendsTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // ÉèÖÃÒ»Ö±ÏÔÊ¾´¹Ö±¹ö¶¯Ìõ
         
-        //ä¸ºå¥½å‹åˆ—è¡¨è¡¨æ ¼æ·»åŠ å³é”®ï¼Œå¯ä»¥è¿›è¡Œå‘é€æ¶ˆæ¯çš„æ“ä½œ
+        //ÎªºÃÓÑÁĞ±í±í¸ñÌí¼ÓÓÒ¼ü£¬¿ÉÒÔ½øĞĞ·¢ËÍÏûÏ¢µÄ²Ù×÷
         friendsTable.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {  //è‹¥æ˜¯é¼ æ ‡å³é”®ç‚¹å‡»
-                    final int row = friendsTable.rowAtPoint(e.getPoint()); //è¿›è¡Œå®šä½æ˜¯åœ¨å“ªä¸€è¡Œ
+                if (SwingUtilities.isRightMouseButton(e)) {  //ÈôÊÇÊó±êÓÒ¼üµã»÷
+                    final int row = friendsTable.rowAtPoint(e.getPoint()); //½øĞĞ¶¨Î»ÊÇÔÚÄÄÒ»ĞĞ
                     if(row != -1){
-                        final JPopupMenu popUp = new JPopupMenu();  //å¼¹å‡ºèœå•
-                        JMenuItem sendMessage = new JMenuItem("å‘é€æ¶ˆæ¯");  //å¼¹å‡ºèœå•çš„å†…å®¹æˆ–è€…é€‰é¡¹
+                        final JPopupMenu popUp = new JPopupMenu();  //µ¯³ö²Ëµ¥
+                        JMenuItem sendMessage = new JMenuItem("·¢ËÍÏûÏ¢");  //µ¯³ö²Ëµ¥µÄÄÚÈİ»òÕßÑ¡Ïî
                         sendMessage.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                sendToUserNickname = (String) friendsTableModel.getValueAt(row, 0);  //å®šä½åˆ°è¡Œè·å–æ˜µç§°
+                                sendToUserNickname = (String) friendsTableModel.getValueAt(row, 0);  //¶¨Î»µ½ĞĞ»ñÈ¡êÇ³Æ
                                 sendToUserID = (String) friendsTableModel.getValueAt(row, 1);
                                 sendToUserState = (String) friendsTableModel.getValueAt(row, 2);
-                                sendTargetField1.setText("å¥½å‹:" + sendToUserNickname + " " + sendToUserState);
-                                //è½½å…¥ç§èŠèŠå¤©è®°å½•
+                                sendTargetField1.setText("ºÃÓÑ:" + sendToUserNickname + " " + sendToUserState);
+                                //ÔØÈëË½ÁÄÁÄÌì¼ÇÂ¼
                                 messageShowArea1.setText(SingleBuffer.getP2pMessageHistory().get(sendToUserID).toString());
                             }
                         });
@@ -90,12 +111,62 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
+
+
+        //ÈºÁÄÃæ°å
+        JPanel GroupPanel = new JPanel();
+        GroupPanel.setLayout(null);
+
+
+        // ÈºÁÄÁĞ±í
+        JTable groupChatsTable = new JTable();
+        groupChatsTable.setRowHeight(30);
+        groupChatsTable.setEnabled(false);
+        DefaultTableCellRenderer r2 = new DefaultTableCellRenderer();
+        r2.setHorizontalAlignment(JLabel.CENTER);
+        groupChatsTable.setDefaultRenderer(Object.class, r2);
+
+        // ´´½¨²¢¶¨Òå±í¸ñÄ£ĞÍ¶ÔÏóµÄÊµÀı
+        groupChatsTableModel = new DefaultTableModel();
+        String[] groupChatsTableColumnNames = {"Èº×éID", "Èº×éÃû"};
+        Object[][] groupChatsTableData = {};
+        groupChatsTableModel.setDataVector(groupChatsTableData, groupChatsTableColumnNames);
+        groupChatsTable.setModel(groupChatsTableModel);
+
+        JScrollPane groupChatsTableScroll = new JScrollPane(groupChatsTable);
+        groupChatsTableScroll.setBounds(0, 0, 320, 600);
+        groupChatsTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // ÎªÈºÁÄÁĞ±í±í¸ñÌí¼ÓÓÒ¼ü£¬¿ÉÒÔÌø×ªµ½ÏàÓ¦µÄÈºÁÄ
+        groupChatsTable.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {  // ÈôÊÇÊó±êÓÒ¼üµã»÷
+                    final int row = groupChatsTable.rowAtPoint(e.getPoint()); // ½øĞĞ¶¨Î»ÊÇÔÚÄÄÒ»ĞĞ
+                    if(row != -1){
+                        final JPopupMenu popUp = new JPopupMenu();  // µ¯³ö²Ëµ¥
+                        JMenuItem enterGroupChat = new JMenuItem("½øÈëÈºÁÄ");  // µ¯³ö²Ëµ¥µÄÄÚÈİ»òÕßÑ¡Ïî
+                        enterGroupChat.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                curGroupID = (String) groupChatsTableModel.getValueAt(row, 0); // ¶¨Î»µ½ĞĞ»ñÈ¡Èº×éID
+                                String groupName = (String) groupChatsTableModel.getValueAt(row, 1); // »ñÈ¡Èº×éÃû³Æ
+                                sendTargetField3.setText("ÈºÁÄ£º" + groupName);
+                                // ÔØÈëÈºÁÄÁÄÌì¼ÇÂ¼£¬Äã¿ÉÄÜĞèÒªÊµÏÖ getGroupChatMessageHistory Õâ¸ö·½·¨
+                                messageShowArea3.setText(SingleBuffer.getGroupChatMessageHistory().get(curGroupID).toString());
+                            }
+                        });
+                        popUp.add(enterGroupChat);
+                        popUp.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+        });
+
         
-        //ç§èŠèŠå¤©åŒº
+        //Ë½ÁÄÁÄÌìÇø
         JPanel p2pChatPanel = new JPanel();
         p2pChatPanel.setBounds(320, 0, 550, 600);
         JPanel titlePanel1 = new JPanel();
-        titlePanel1.setPreferredSize(new Dimension(550, 40)); //æ ‡é¢˜æ”¾ç½®çš„åŒºåŸŸ
+        titlePanel1.setPreferredSize(new Dimension(550, 40)); //±êÌâ·ÅÖÃµÄÇøÓò
         titlePanel1.setBackground(Color.white);
         JPanel contentPanel1 = new JPanel();
         contentPanel1.setPreferredSize(new Dimension(550, 350));
@@ -106,44 +177,44 @@ public class ClientFrame extends JFrame {
         p2pChatPanel.add(contentPanel1, BorderLayout.CENTER);
         p2pChatPanel.add(inputPanel1, BorderLayout.SOUTH);
         
-        //å‘é€ç›®æ ‡
+        //·¢ËÍÄ¿±ê
         sendTargetField1 = new JTextField();
         sendTargetField1.setEditable(false);
-        sendTargetField1.setHorizontalAlignment(JTextField.CENTER);  //æ–‡æœ¬å±…ä¸­å¯¹é½
-        sendTargetField1.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
+        sendTargetField1.setHorizontalAlignment(JTextField.CENTER);  //ÎÄ±¾¾ÓÖĞ¶ÔÆë
+        sendTargetField1.setFont(new Font("ËÎÌå", Font.BOLD, 15));
         sendTargetField1.setPreferredSize(new Dimension(170, 30));
         titlePanel1.add(sendTargetField1);
         
-        //æ¶ˆæ¯æ˜¾ç¤ºåŒº
+        //ÏûÏ¢ÏÔÊ¾Çø
         messageShowArea1 = new JTextArea();
-        messageShowArea1.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
+        messageShowArea1.setFont(new Font("ËÎÌå", Font.BOLD, 15));
         messageShowArea1.setPreferredSize(new Dimension(550, 450));
         messageShowArea1.setEditable(false);
-        messageShowArea1.setLineWrap(true);    //è‡ªåŠ¨æ¢è¡Œ
-        messageShowArea1.setWrapStyleWord(true);  //æ–­è¡Œä¸æ–­å­—
+        messageShowArea1.setLineWrap(true);    //×Ô¶¯»»ĞĞ
+        messageShowArea1.setWrapStyleWord(true);  //¶ÏĞĞ²»¶Ï×Ö
         contentPanel1.add(messageShowArea1);
         
-        //èŠå¤©è¾“å…¥åŒº
+        //ÁÄÌìÊäÈëÇø
         inputMessageArea1 = new JTextArea();
         inputMessageArea1.setPreferredSize(new Dimension(550, 100));
-        inputMessageArea1.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
-        inputMessageArea1.setLineWrap(true);        //è‡ªåŠ¨æ¢è¡Œ
-        inputMessageArea1.setWrapStyleWord(true);    //æ–­è¡Œä¸æ–­å­—
+        inputMessageArea1.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        inputMessageArea1.setLineWrap(true);        //×Ô¶¯»»ĞĞ
+        inputMessageArea1.setWrapStyleWord(true);    //¶ÏĞĞ²»¶Ï×Ö
         
-        //å‘é€æŒ‰é’®
-        JButton sendBtn1 = new JButton("å‘é€");
+        //·¢ËÍ°´Å¥
+        JButton sendBtn1 = new JButton("·¢ËÍ");
         sendBtn1.setPreferredSize(new Dimension(80, 30));
-        sendBtn1.setFocusPainted(false);//å»ç„¦ç‚¹
+        sendBtn1.setFocusPainted(false);//È¥½¹µã
         sendBtn1.setBackground(new Color(27, 127, 176));
-        sendBtn1.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        sendBtn1.setForeground(Color.white);//è®¾ç½®å­—ä½“é¢œè‰²
+        sendBtn1.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        sendBtn1.setForeground(Color.white);//ÉèÖÃ×ÖÌåÑÕÉ«
         inputPanel1.add(inputMessageArea1, BorderLayout.NORTH);
         inputPanel1.add(sendBtn1, BorderLayout.CENTER);
         
         p2pPanel.add(friendsTableScroll);
         p2pPanel.add(p2pChatPanel);
 
-        //ç¾¤èŠç•Œé¢
+        //¹ã²¥½çÃæ
         JPanel groupPanel = new JPanel();
         JPanel titlePanel2 = new JPanel();
         titlePanel2.setPreferredSize(new Dimension(900, 40));
@@ -157,123 +228,205 @@ public class ClientFrame extends JFrame {
         groupPanel.add(contentPanel2, BorderLayout.CENTER);
         groupPanel.add(inputPanel2, BorderLayout.SOUTH);
         
-        //å‘é€ç›®æ ‡
+        //·¢ËÍÄ¿±ê
         sendTargetField2 = new JTextField();
         sendTargetField2.setEditable(false);
         sendTargetField2.setHorizontalAlignment(JTextField.CENTER);
-        sendTargetField2.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
+        sendTargetField2.setFont(new Font("ËÎÌå", Font.BOLD, 15));
         sendTargetField2.setPreferredSize(new Dimension(200, 30));
-        sendTargetField2.setText("ç¾¤èŠ");
+        sendTargetField2.setText("¹ã²¥");
         titlePanel2.add(sendTargetField2);
         
-        //æ¶ˆæ¯æ˜¾ç¤ºåŒº
+        //ÏûÏ¢ÏÔÊ¾Çø
         messageShowArea2 = new JTextArea();
         messageShowArea2.setPreferredSize(new Dimension(820, 350));
         messageShowArea2.setEditable(false);
-        messageShowArea2.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
-        messageShowArea2.setLineWrap(true);        //è‡ªåŠ¨æ¢è¡Œ
-        messageShowArea2.setWrapStyleWord(true);    //æ–­è¡Œä¸æ–­å­—
+        messageShowArea2.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        messageShowArea2.setLineWrap(true);        //×Ô¶¯»»ĞĞ
+        messageShowArea2.setWrapStyleWord(true);    //¶ÏĞĞ²»¶Ï×Ö
         contentPanel2.add(messageShowArea2);
         
-        //èŠå¤©è¾“å…¥åŒº
+        //ÁÄÌìÊäÈëÇø
         inputMessageArea2 = new JTextArea();
         inputMessageArea2.setPreferredSize(new Dimension(800, 100));
-        inputMessageArea2.setFont(new Font("å®‹ä½“", Font.BOLD, 15));
-        inputMessageArea2.setLineWrap(true);        //è‡ªåŠ¨æ¢è¡Œ
-        inputMessageArea2.setWrapStyleWord(true);    // æ–­è¡Œä¸æ–­å­—
+        inputMessageArea2.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        inputMessageArea2.setLineWrap(true);        //×Ô¶¯»»ĞĞ
+        inputMessageArea2.setWrapStyleWord(true);    // ¶ÏĞĞ²»¶Ï×Ö
         
-        //å‘é€æŒ‰é’®
-        JButton sendBtn2 = new JButton("å‘é€");
+        //·¢ËÍ°´Å¥
+        JButton sendBtn2 = new JButton("·¢ËÍ");
         sendBtn2.setPreferredSize(new Dimension(100, 30));
-        sendBtn2.setFocusPainted(false);//å»ç„¦ç‚¹
+        sendBtn2.setFocusPainted(false);//È¥½¹µã
         sendBtn2.setBackground(new Color(27, 127, 176));
-        sendBtn2.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        sendBtn2.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         sendBtn2.setForeground(Color.white);
         inputPanel2.add(inputMessageArea2, BorderLayout.NORTH);
         inputPanel2.add(sendBtn2, BorderLayout.CENTER);
 
-        //ä¸ªäººä¿¡æ¯
+
+        // ÈºÁÄÁÄÌìÇø
+
+
+        JPanel groupChatPanel = new JPanel();
+        groupChatPanel.setBounds(320, 0, 550, 600);
+        JPanel titlePanel3 = new JPanel();
+        titlePanel3.setPreferredSize(new Dimension(550, 40));
+        titlePanel3.setBackground(Color.white);
+        JPanel contentPanel3 = new JPanel();
+        contentPanel3.setPreferredSize(new Dimension(550, 350));
+        JPanel inputPanel3 = new JPanel();
+        inputPanel3.setPreferredSize(new Dimension(550, 200));
+        inputPanel3.setBackground(Color.white);
+        groupChatPanel.add(titlePanel3, BorderLayout.NORTH);
+        groupChatPanel.add(contentPanel3, BorderLayout.CENTER);
+        groupChatPanel.add(inputPanel3, BorderLayout.SOUTH);
+
+        //·¢ËÍÄ¿±ê
+        sendTargetField3 = new JTextField();
+        sendTargetField3.setEditable(false);
+        sendTargetField3.setHorizontalAlignment(JTextField.CENTER);  //ÎÄ±¾¾ÓÖĞ¶ÔÆë
+        sendTargetField3.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        sendTargetField3.setPreferredSize(new Dimension(170, 30));
+        titlePanel3.add(sendTargetField3);
+
+        //ÏûÏ¢ÏÔÊ¾Çø
+        messageShowArea3 = new JTextArea();
+        messageShowArea3.setPreferredSize(new Dimension(550, 450));
+        messageShowArea3.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        messageShowArea3.setEditable(false);
+        messageShowArea3.setLineWrap(true);
+        messageShowArea3.setWrapStyleWord(true);
+        contentPanel3.add(messageShowArea3);
+
+        //ÁÄÌìÊäÈëÇø
+        inputMessageArea3 = new JTextArea();
+        inputMessageArea3.setPreferredSize(new Dimension(550, 100));
+        inputMessageArea3.setFont(new Font("ËÎÌå", Font.BOLD, 15));
+        inputMessageArea3.setLineWrap(true);
+        inputMessageArea3.setWrapStyleWord(true);
+
+        //·¢ËÍ°´Å¥
+        JButton sendBtn3 = new JButton("·¢ËÍ");
+        sendBtn3.setPreferredSize(new Dimension(80, 30));
+        sendBtn3.setFocusPainted(false);
+        sendBtn3.setBackground(new Color(27, 127, 176));
+        sendBtn3.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        sendBtn3.setForeground(Color.white);
+        inputPanel3.add(inputMessageArea3, BorderLayout.NORTH);
+        inputPanel3.add(sendBtn3, BorderLayout.CENTER);
+
+        GroupPanel.add(groupChatsTableScroll);
+        GroupPanel.add(groupChatPanel);
+
+
+        //¸öÈËĞÅÏ¢
         JPanel selfInfoPanel = new JPanel();
-        selfInfoPanel.setLayout(new GridLayout(12,1,10,10)); //6è¡Œ1åˆ—ï¼Œæ°´å¹³é—´è·10ï¼Œå‚ç›´é—´è·5
-        JLabel nicknameLabel = new JLabel("æ˜µç§°ï¼š");
-        JLabel sexLabel = new JLabel("æ€§åˆ«ï¼š");
-        JLabel phoneNumberLabel = new JLabel("æ‰‹æœºå·ï¼š");
-        nicknameLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        sexLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        phoneNumberLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        selfInfoPanel.setLayout(new GridLayout(12,1,10,10)); //6ĞĞ1ÁĞ£¬Ë®Æ½¼ä¾à10£¬´¹Ö±¼ä¾à5
+        JLabel nicknameLabel = new JLabel("êÇ³Æ£º");
+        JLabel sexLabel = new JLabel("ĞÔ±ğ£º");
+        nicknameLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        sexLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         nicknameField = new JTextField();
         sexField = new JTextField();
-        phoneNumberField = new JTextField();
-        
-        //è®¾ç½®å†…å®¹å±…ä¸­
+
+        //ÉèÖÃÄÚÈİ¾ÓÖĞ
         nicknameField.setHorizontalAlignment(JTextField.CENTER);
         sexField.setHorizontalAlignment(JTextField.CENTER);
-        phoneNumberField.setHorizontalAlignment(JTextField.CENTER);
         
-        //è®¾ç½®å­—ä½“æ ·å¼
-        nicknameField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        sexField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        phoneNumberField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        //ÉèÖÃ×ÖÌåÑùÊ½
+        nicknameField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        sexField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         
-        //è®¾ç½®ä¸å¯ç¼–è¾‘
+        //ÉèÖÃ²»¿É±à¼­
         nicknameField.setEditable(false);
         sexField.setEditable(false);
-        phoneNumberField.setEditable(false);
         
-        //æ·»åŠ ç»„ä»¶ï¼Œç½‘æ ¼å¸ƒå±€
+        //Ìí¼Ó×é¼ş£¬Íø¸ñ²¼¾Ö
         selfInfoPanel.add(nicknameLabel);
         selfInfoPanel.add(nicknameField);
         selfInfoPanel.add(sexLabel);
         selfInfoPanel.add(sexField);
-        selfInfoPanel.add(phoneNumberLabel);
-        selfInfoPanel.add(phoneNumberField);
 
-        //æ·»åŠ å¥½å‹
+        //Ìí¼ÓºÃÓÑ
         JPanel addPanel = new JPanel();
         addPanel.setLayout(null);
-        JLabel addFriendIDLabel = new JLabel("è¯·è¾“å…¥è¦æ·»åŠ çš„å¥½å‹è´¦å·ï¼š");
-        addFriendIDLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));//è®¾ç½®å­—ä½“æ ·å¼
-        addFriendIDLabel.setBounds(300,130,250, 30);
+        JLabel addFriendIDLabel = new JLabel("ÇëÊäÈëÒªÌí¼ÓµÄºÃÓÑÕËºÅ£º");
+        addFriendIDLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));//ÉèÖÃ×ÖÌåÑùÊ½
+        addFriendIDLabel.setBounds(300,50,250, 30);
         addPanel.add(addFriendIDLabel);
         JTextField addFriendIDField = new JTextField();
-        addFriendIDField.setBounds(275, 180, 250, 40);
+        addFriendIDField.setBounds(275, 80, 250, 40);
         addFriendIDField.setHorizontalAlignment(JTextField.CENTER);
         
-        //è®¾ç½®å­—ä½“æ ·å¼
-        addFriendIDField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        //ÉèÖÃ×ÖÌåÑùÊ½
+        addFriendIDField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         addPanel.add(addFriendIDField);
-        JButton addBtn = new JButton("æ·»åŠ ");
-        addBtn.setBounds(350,250,100, 30);
-        addBtn.setFocusPainted(false);//å»ç„¦ç‚¹
+        JButton addBtn = new JButton("Ìí¼Ó");
+        addBtn.setBounds(350,150,100, 30);
+        addBtn.setFocusPainted(false);//È¥½¹µã
         addBtn.setBackground(new Color(27, 127, 176));
-        addBtn.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+        addBtn.setFont(new Font("ËÎÌå", Font.BOLD, 16));
         addBtn.setForeground(Color.white);
         addPanel.add(addBtn);
 
-        // åˆ›å»ºé€‰é¡¹å¡é¢æ¿
+        // Ìí¼ÓÈº×é
+        JPanel addGroupPanel = new JPanel();
+        addGroupPanel.setLayout(null);
+        JLabel addGroupIDLabel = new JLabel("ÇëÊäÈëÒªÌí¼ÓµÄÈº×éID£º");
+        addGroupIDLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16)); // ÉèÖÃ×ÖÌåÑùÊ½
+        addGroupIDLabel.setBounds(300, 50, 250, 30);
+        addGroupPanel.add(addGroupIDLabel);
+        JTextField addGroupIDField = new JTextField();
+        addGroupIDField.setBounds(275, 80, 250, 40);
+        addGroupIDField.setHorizontalAlignment(JTextField.CENTER);
+
+
+       // ÉèÖÃ×ÖÌåÑùÊ½
+        addGroupIDField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        addGroupPanel.add(addGroupIDField);
+        JButton addGroupBtn = new JButton("Ìí¼Ó");
+        addGroupBtn.setBounds(350, 150, 100, 30);
+        addGroupBtn.setFocusPainted(false); // È¥½¹µã
+        addGroupBtn.setBackground(new Color(27, 127, 176));
+        addGroupBtn.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        addGroupBtn.setForeground(Color.white);
+        addGroupPanel.add(addGroupBtn);
+
+        // ´´½¨Ò»¸öĞÂµÄÃæ°åÀ´°üº¬Ìí¼ÓºÃÓÑÃæ°åºÍÌí¼ÓÈº×éÃæ°å
+        JPanel addPanelContainer = new JPanel();
+        addPanelContainer.setLayout(new BoxLayout(addPanelContainer, BoxLayout.Y_AXIS));
+       // ½«Ìí¼ÓºÃÓÑÃæ°åºÍÌí¼ÓÈº×éÃæ°å·Ö±ğÌí¼Óµ½ĞÂµÄÃæ°åÖĞ
+        addPanelContainer.add(addPanel);
+        addPanelContainer.add(addGroupPanel);
+
+
+        // ´´½¨Ñ¡Ïî¿¨Ãæ°å
         final JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setPreferredSize(new Dimension(900, 600));
         tabbedPane.setTabPlacement(JTabbedPane.LEFT);
-        Image friendsIcon = new ImageIcon("static/friendsIcon.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
-        Image groupIcon = new ImageIcon("static/groupIcon.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
-        Image selfInfoIcon = new ImageIcon("static/selfInfoIcon.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
-        Image addIcon = new ImageIcon("static/addIcon.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
-        // åˆ›å»ºå¥½å‹ç•Œé¢é€‰é¡¹å¡
-        tabbedPane.addTab(null, new ImageIcon(friendsIcon), p2pPanel, "æŸ¥çœ‹å¥½å‹");
-        // åˆ›å»ºç¾¤èŠç•Œé¢é€‰é¡¹å¡
-        tabbedPane.addTab(null, new ImageIcon(groupIcon), groupPanel, "ç¾¤èŠ");
-        // åˆ›å»ºæ·»åŠ ç•Œé¢é€‰é¡¹å¡
-        tabbedPane.addTab(null, new ImageIcon(addIcon), addPanel, "æ·»åŠ å¥½å‹");
-        // åˆ›å»ºä¸ªäººä¿¡æ¯ç•Œé¢é€‰é¡¹å¡
-        tabbedPane.addTab(null, new ImageIcon(selfInfoIcon), selfInfoPanel, "æŸ¥çœ‹ä¸ªäººä¿¡æ¯");
-        tabbedPane.setUI(new MyTabbedPaneUI()); //è®¾ç½®é€‰é¡¹å¡çš„UI
-        // è®¾ç½®é»˜è®¤é€‰ä¸­çš„é€‰é¡¹å¡
+        Image friendsIcon = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\user.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
+        Image groupIcon = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\megaphone.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
+        Image selfInfoIcon = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\home.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
+        Image addIcon = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\add.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
+        Image group2Icon = new ImageIcon("E:\\java\\projectpractice\\experiment\\javaÍøÂç¿Î³ÌÉè¼Æ\\JavaSocketÁÄÌìÊÒ\\static\\users-alt.png").getImage().getScaledInstance(30,30, Image.SCALE_SMOOTH);
+        // ´´½¨ºÃÓÑ½çÃæÑ¡Ïî¿¨
+        tabbedPane.addTab(null, new ImageIcon(friendsIcon), p2pPanel, "²é¿´ºÃÓÑ");
+        // ´´½¨¹ã²¥½çÃæÑ¡Ïî¿¨
+        tabbedPane.addTab(null, new ImageIcon(groupIcon), groupPanel, "¹ã²¥");
+        // ´´½¨ÈºÁÄ½çÃæÑ¡Ïî¿¨
+        tabbedPane.addTab(null, new ImageIcon(group2Icon), GroupPanel, "ÈºÁÄ");
+        // ´´½¨Ìí¼Ó½çÃæÑ¡Ïî¿¨
+        tabbedPane.addTab(null, new ImageIcon(addIcon), addPanelContainer, "Ìí¼Ó");
+        // ´´½¨¸öÈËĞÅÏ¢½çÃæÑ¡Ïî¿¨
+        tabbedPane.addTab(null, new ImageIcon(selfInfoIcon), selfInfoPanel, "²é¿´¸öÈËĞÅÏ¢");
+        tabbedPane.setUI(new MyTabbedPaneUI()); //ÉèÖÃÑ¡Ïî¿¨µÄUI
+        // ÉèÖÃÄ¬ÈÏÑ¡ÖĞµÄÑ¡Ïî¿¨
         tabbedPane.setSelectedIndex(0);
         this.add(tabbedPane);
 
-        //å¼€å¯ç›‘å¬çº¿ç¨‹
+        //¿ªÆô¼àÌıÏß³Ì
         new ListeningThread(this).start();
-        //ç§èŠå‘é€æŒ‰é’®ç»‘å®šäº‹ä»¶
+        //Ë½ÁÄ·¢ËÍ°´Å¥°ó¶¨ÊÂ¼ş
         sendBtn1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -286,20 +439,35 @@ public class ClientFrame extends JFrame {
             }
         });
         
-        //ç¾¤èŠå‘é€æŒ‰é’®ç»‘å®šäº‹ä»¶
+        //¹ã²¥·¢ËÍ°´Å¥°ó¶¨ÊÂ¼ş
         sendBtn2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    sendGroupMessage(inputMessageArea2.getText());
+                    sendBoardMessage(inputMessageArea2.getText());
                     inputMessageArea2.setText("");
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
             }
         });
+
+        //ÈºÁÄ·¢ËÍ°´Å¥°ó¶¨ÊÂ¼ş
+        sendBtn3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // sendToGroupChatÊÇÓÃÀ´·¢ËÍÈºÁÄÏûÏ¢µÄ·½·¨£¬ÄãĞèÒªÊµÏÖÕâ¸ö·½·¨
+                    sendGroupMessage(inputMessageArea3.getText());
+                    // Çå¿ÕÊäÈëÇøÓò
+                    inputMessageArea3.setText("");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
         
-        //æ·»åŠ å¥½å‹æŒ‰é’®ç»‘å®šäº‹ä»¶
+        //Ìí¼ÓºÃÓÑ°´Å¥°ó¶¨ÊÂ¼ş
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -310,17 +478,29 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
+        //Ìí¼ÓÈºÁÄ°´Å¥°ó¶¨ÊÂ¼ş
+        addGroupBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    addGroup(addGroupIDField.getText());
+
+                } catch (IOException err) {
+                    err.printStackTrace();
+                }
+            }
+        });
         
-        //é€€å‡ºå®¢æˆ·ç«¯
+        //ÍË³ö¿Í»§¶Ë
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int result = JOptionPane.showConfirmDialog(null, "æ˜¯å¦è¦é€€å‡ºï¼Ÿ", "é€€å‡ºç¡®è®¤", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                int result = JOptionPane.showConfirmDialog(null, "ÊÇ·ñÒªÍË³ö£¿", "ÍË³öÈ·ÈÏ", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
                     ClientFrame.this.dispose();
                     Request request = new Request(RequestType.LOG_OUT);
                     request.addData("userID", SingleBuffer.getUserInfo().getUserID());
                     try {
-                        ClientSendRequest.sendNotForResponse(request);//å‘æœåŠ¡å™¨å‘é€é€€å‡ºæŠ¥æ–‡
+                        ClientSendRequest.sendNotForResponse(request);//Ïò·şÎñÆ÷·¢ËÍÍË³ö±¨ÎÄ
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
@@ -328,23 +508,22 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
-        loadInitData();//è½½å…¥å¥½å‹ã€ç¾¤ç»„ã€ä¸ªäººä¿¡æ¯ç­‰
+        loadInitData();//ÔØÈëºÃÓÑ¡¢Èº×é¡¢¸öÈËĞÅÏ¢µÈ
 
         this.setVisible(true);
     }
     
-    //åŠ è½½æœ¬åœ°ç¼“å­˜æ•°æ®
+    //¼ÓÔØ±¾µØ»º´æÊı¾İ
     private void loadInitData(){
         nicknameField.setText(SingleBuffer.getUserInfo().getNickName());
         sexField.setText(SingleBuffer.getUserInfo().getSex().toString());
-        phoneNumberField.setText(SingleBuffer.getUserInfo().getPhoneNumber());
-        //åŠ è½½æ‰€æœ‰å¥½å‹
+        //¼ÓÔØËùÓĞºÃÓÑ
         if (SingleBuffer.getFriends() != null) {
             for (UserInfo friend : SingleBuffer.getFriends()) {
-                friendsTableModel.addRow(new String[]{friend.getNickName(), friend.getUserID(), "ç¦»çº¿"});
+                friendsTableModel.addRow(new String[]{friend.getNickName(), friend.getUserID(), "ÀëÏß"});
             }
         }
-        //è®¾ç½®å¥½å‹åœ¨çº¿çŠ¶æ€
+        //ÉèÖÃºÃÓÑÔÚÏß×´Ì¬
         if (SingleBuffer.getOnlineFriends() != null) {
             for (UserInfo onlineFriend : SingleBuffer.getOnlineFriends()) {
                 Vector<Vector> friends = friendsTableModel.getDataVector();
@@ -355,58 +534,88 @@ public class ClientFrame extends JFrame {
                         break;
                     }
                 }
-                friendsTableModel.insertRow(0, new String[]{onlineFriend.getNickName(), onlineFriend.getUserID(), "åœ¨çº¿"});
+                friendsTableModel.insertRow(0, new String[]{onlineFriend.getNickName(), onlineFriend.getUserID(), "ÔÚÏß"});
             }
         }
-        //åŠ è½½å¥½å‹èŠå¤©è®°å½•
+        //¼ÓÔØºÃÓÑÁÄÌì¼ÇÂ¼
         if (SingleBuffer.getFriends() != null) {
             for (UserInfo friend : SingleBuffer.getFriends()) {
                 SingleBuffer.getP2pMessageHistory().put(friend.getUserID(), new StringBuilder());
             }
         }
+
+        ArrayList<GroupInfo> groupChats = SingleBuffer.getGroupChats();
+        if (groupChats != null) {
+            for (GroupInfo groupChat : groupChats) {
+                // Add row to the group chat table
+                groupChatsTableModel.addRow(new String[]{groupChat.getGroupId(), groupChat.getGroupName()});
+
+                // Initialize group chat message history if not already present
+                if (!SingleBuffer.getGroupChatMessageHistory().containsKey(groupChat.getGroupId())) {
+                    SingleBuffer.getGroupChatMessageHistory().put(groupChat.getGroupId(), new StringBuilder());
+                }
+            }
+        }
+
+
+
+
     }
     
-    //å‘é€ç§èŠæ¶ˆæ¯
+    //·¢ËÍË½ÁÄÏûÏ¢
     public void sendP2pMessage(String message) throws IOException {
         Request request = new Request(RequestType.SEND_MESSAGE);
-        if (sendToUserID != null){ //ç§å‘æ¶ˆæ¯
-            if (sendToUserState.equals("åœ¨çº¿")) {
+        if (sendToUserID != null){ //Ë½·¢ÏûÏ¢
+            if (sendToUserState.equals("ÔÚÏß")) {
                 P2PMessage p2pMessage = new P2PMessage(SingleBuffer.getUserInfo().getUserID(), sendToUserID, message);
                 request.addData("msg", p2pMessage);
-                messageShowArea1.append(p2pMessage.toString());//èŠå¤©è®°å½•ä¸­æ·»åŠ è¯¥æ¡æ¶ˆæ¯
+                messageShowArea1.append(p2pMessage.toString());//ÁÄÌì¼ÇÂ¼ÖĞÌí¼Ó¸ÃÌõÏûÏ¢
                 SingleBuffer.getP2pMessageHistory().get(sendToUserID).append(p2pMessage);
             } else{
-                JOptionPane.showMessageDialog(ClientFrame.this,"å¯¹æ–¹ç¦»çº¿ï¼Œæ— æ³•å‘é€ã€‚","æ— æ³•å‘é€", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(ClientFrame.this,"¶Ô·½ÀëÏß£¬ÎŞ·¨·¢ËÍ¡£","ÎŞ·¨·¢ËÍ", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         ClientSendRequest.sendNotForResponse(request);
     }
     
-    //å‘é€ç¾¤èŠæ¶ˆæ¯
-    public void sendGroupMessage(String message) throws IOException{
+    //·¢ËÍ¹ã²¥ÏûÏ¢
+    public void sendBoardMessage(String message) throws IOException{
         if (message.length() != 0) {
             Request request = new Request(RequestType.SEND_MESSAGE);
-            GroupMessage groupMessage = new GroupMessage(SingleBuffer.getUserInfo().getUserID(), message);
-            request.addData("msg", groupMessage);
-            messageShowArea2.append(groupMessage.toString());//èŠå¤©è®°å½•ä¸­æ·»åŠ è¯¥æ¡æ¶ˆæ¯
+            BoardMessage boardMessage = new BoardMessage(SingleBuffer.getUserInfo().getUserID(), message);
+            request.addData("msg", boardMessage);
+            messageShowArea2.append(boardMessage.toString());//ÁÄÌì¼ÇÂ¼ÖĞÌí¼Ó¸ÃÌõÏûÏ¢
             ClientSendRequest.sendNotForResponse(request);
         }
     }
+
+    //·¢ËÍÈºÁÄÏûÏ¢
+    private void sendGroupMessage(String message) throws IOException {
+        if (message.length() != 0) {
+            Request request = new Request(RequestType.SEND_MESSAGE);
+            GroupMessage groupMessage = new GroupMessage(SingleBuffer.getUserInfo().getUserID(), curGroupID, message);
+            request.addData("msg", groupMessage);
+            messageShowArea3.append(groupMessage.toString());//ÁÄÌì¼ÇÂ¼ÖĞÌí¼Ó¸ÃÌõÏûÏ¢
+            ClientSendRequest.sendNotForResponse(request);
+            SingleBuffer.getGroupChatMessageHistory().get(curGroupID).append(groupMessage);
+
+        }
+    }
     
-    //æ·»åŠ å¥½å‹
+    //Ìí¼ÓºÃÓÑ
     public void addFriend(String userID) throws InterruptedException, IOException, ClassNotFoundException {
         boolean isFriend = false;
-        Iterator<UserInfo> iterator = SingleBuffer.getFriends().iterator(); //è¿­ä»£å™¨
-        while (iterator.hasNext()){ //æ£€æŸ¥æ˜¯å¦å·²æ˜¯å¥½å‹
+        Iterator<UserInfo> iterator = SingleBuffer.getFriends().iterator(); //µü´úÆ÷
+        while (iterator.hasNext()){ //¼ì²éÊÇ·ñÒÑÊÇºÃÓÑ
             if (iterator.next().getUserID().equals(userID)){
                 isFriend = true;
                 break;
             }
         }
         if (userID.equals(SingleBuffer.getUserInfo().getUserID())){
-            JOptionPane.showMessageDialog(ClientFrame.this,"æ‚¨ä¸èƒ½æ·»åŠ è‡ªå·±ä¸ºå¥½å‹ã€‚","æ·»åŠ é”™è¯¯", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(ClientFrame.this,"Äú²»ÄÜÌí¼Ó×Ô¼ºÎªºÃÓÑ¡£","Ìí¼Ó´íÎó", JOptionPane.INFORMATION_MESSAGE);
         } else if (isFriend){
-            JOptionPane.showMessageDialog(ClientFrame.this,"æ‚¨å’Œ" + userID + "å·²æ˜¯å¥½å‹ï¼Œè¯·å‹¿é‡å¤æ·»åŠ ã€‚","å·²æ˜¯å¥½å‹", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(ClientFrame.this,"ÄúºÍ" + userID + "ÒÑÊÇºÃÓÑ£¬ÇëÎğÖØ¸´Ìí¼Ó¡£","ÒÑÊÇºÃÓÑ", JOptionPane.INFORMATION_MESSAGE);
         } else{
             Request request = new Request(RequestType.ADD_FRIEND);
             request.addData("userID", userID);
@@ -414,13 +623,66 @@ public class ClientFrame extends JFrame {
             ClientSendRequest.sendNotForResponse(request);
         }
     }
-    
+
+    //Ìí¼ÓÈºÁÄ
+    public void addGroup(String groupID) throws IOException {
+        if (groupID.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    ClientFrame.this,
+                    "Èº×éID²»ÄÜÎª¿Õ¡£",
+                    "Ìí¼Ó´íÎó",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        // Check if the group ID already exists in the local cache
+        boolean isGroupExisting = isAtGroup(groupID);
+
+        if (isGroupExisting) {
+            JOptionPane.showMessageDialog(
+                    ClientFrame.this,
+                    "ÄúÒÑÔÚ¸ÃÈº×éÖĞ¡£",
+                    "Ìí¼Ó´íÎó",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } else {
+            // Create and send an 'add group' request to the server
+            Request request = new Request(RequestType.ADD_GROUP);
+            request.addData("groupID", groupID);
+            request.addData("userID", SingleBuffer.getUserInfo().getUserID());
+            ClientSendRequest.sendNotForResponse(request);
+        }
+    }
+
+    private boolean isAtGroup(String groupID) {
+        ArrayList<GroupInfo> groupChats = SingleBuffer.getGroupChats();
+        if (groupChats != null) {
+            for (GroupInfo group : groupChats) {
+                if(group.getGroupId().equals(groupID)){
+                    for(UserInfo userInfo:group.getMembers()){
+                        if(userInfo.getUserID().equals(SingleBuffer.getUserInfo().getUserID())){
+                            return true;
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
     public void setCurSendToUserState(String sendToUserState) {
         this.sendToUserState = sendToUserState;
     }
     public DefaultTableModel getFriendsTableModel() {
         return friendsTableModel;
     }
+
+    public DefaultTableModel getGroupChatsTableModel() {
+        return groupChatsTableModel;
+    }
+
     public String getCurSendToUserID() {
         return sendToUserID;
     }
@@ -443,58 +705,58 @@ public class ClientFrame extends JFrame {
 
 class MyTabbedPaneUI extends BasicTabbedPaneUI {
     protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
-    	//è‡ªå®šä¹‰é€‰é¡¹å¡çš„é«˜ï¼šæ¯”é»˜è®¤çš„é«˜åº¦ é«˜10
+    	//×Ô¶¨ÒåÑ¡Ïî¿¨µÄ¸ß£º±ÈÄ¬ÈÏµÄ¸ß¶È ¸ß10
         return super.calculateTabHeight(tabPlacement, tabIndex, fontHeight) + 10;
     }
     /**
-     * è‡ªå®šä¹‰é€‰é¡¹å¡çš„èƒŒæ™¯è‰²
-     * @param g å›¾å½¢è®¾ç½®
-     * @param tabPlacement æ ‡ç­¾ä½ç½®
-     * @param tabIndex æ ‡ç­¾ä¸‹æ ‡
-     * @param x xè½´
-     * @param y yè½´
-     * @param w å®½
-     * @param h é«˜
-     * @param isSelected æ˜¯å¦è¢«é€‰ä¸­
+     * ×Ô¶¨ÒåÑ¡Ïî¿¨µÄ±³¾°É«
+     * @param g Í¼ĞÎÉèÖÃ
+     * @param tabPlacement ±êÇ©Î»ÖÃ
+     * @param tabIndex ±êÇ©ÏÂ±ê
+     * @param x xÖá
+     * @param y yÖá
+     * @param w ¿í
+     * @param h ¸ß
+     * @param isSelected ÊÇ·ñ±»Ñ¡ÖĞ
      */
     protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex,
                                       int x, int y, int w, int h, boolean isSelected) {
-        Color defaultColor = Color.black;
+        Color defaultColor = Color.white;
         Color selectedColor = new Color(132, 99, 201);
-        //è®¾ç½®é€‰ä¸­æ—¶å’Œæœªè¢«é€‰ä¸­æ—¶çš„é¢œè‰²
+        //ÉèÖÃÑ¡ÖĞÊ±ºÍÎ´±»Ñ¡ÖĞÊ±µÄÑÕÉ«
         g.setColor(!isSelected ? defaultColor : selectedColor);
-        //å¡«å……å›¾å½¢ï¼Œå³é€‰é¡¹å¡ä¸ºçŸ©å½¢
+        //Ìî³äÍ¼ĞÎ£¬¼´Ñ¡Ïî¿¨Îª¾ØĞÎ
         g.fillRect(x, y, w, h);
     }
 
     protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex,
-                                  int x, int y, int w, int h, boolean isSelected) {  //è‡ªå®šä¹‰é€‰é¡¹å¡çš„è¾¹æ¡†è‰²
-        Color defaultColor = Color.black;
+                                  int x, int y, int w, int h, boolean isSelected) {  //×Ô¶¨ÒåÑ¡Ïî¿¨µÄ±ß¿òÉ«
+        Color defaultColor = Color.white;
         Color selectedColor = new Color(132, 99, 201);
-        g.setColor(!isSelected ? defaultColor : selectedColor); //è®¾ç½®é€‰ä¸­æ—¶å’Œæœªè¢«é€‰ä¸­æ—¶çš„é¢œè‰²
+        g.setColor(!isSelected ? defaultColor : selectedColor); //ÉèÖÃÑ¡ÖĞÊ±ºÍÎ´±»Ñ¡ÖĞÊ±µÄÑÕÉ«
     }
 
     protected void paintFocusIndicator(Graphics g,
                                        int tabPlacement, Rectangle[] rects,
                                        int tabIndex, Rectangle iconRect, Rectangle textRect,
-                                       boolean isSelected) {  //è¿™ä¸ªæ–¹æ³•å®šä¹‰å¦‚æœæ²¡æœ‰çš„è¯ï¼Œé€‰é¡¹å¡åœ¨é€‰ä¸­æ—¶ï¼Œå†…æµ‹ä¼šæœ‰è™šçº¿ã€‚
+                                       boolean isSelected) {  //Õâ¸ö·½·¨¶¨ÒåÈç¹ûÃ»ÓĞµÄ»°£¬Ñ¡Ïî¿¨ÔÚÑ¡ÖĞÊ±£¬ÄÚ²â»áÓĞĞéÏß¡£
     }
 
-    protected LayoutManager createLayoutManager() { // è®¾ç½®Layout
+    protected LayoutManager createLayoutManager() { // ÉèÖÃLayout
         return new TabbedPaneLayout();
     }
 
     public class TabbedPaneLayout extends BasicTabbedPaneUI.TabbedPaneLayout {
-    	// è¦æƒ³å®ç°ï¼š1.é€‰ä¸­é€‰é¡¹å¡æ—¶ï¼Œé€‰é¡¹å¡çªå‡ºæ˜¾ç¤º 2.é€‰é¡¹å¡ä¹‹é—´æœ‰é—´è·ã€‚é‚£ä¹ˆå¿…é¡»é‡å†™ä»¥ä¸‹æ–¹æ³•ï¼ï¼
+    	// ÒªÏëÊµÏÖ£º1.Ñ¡ÖĞÑ¡Ïî¿¨Ê±£¬Ñ¡Ïî¿¨Í»³öÏÔÊ¾ 2.Ñ¡Ïî¿¨Ö®¼äÓĞ¼ä¾à¡£ÄÇÃ´±ØĞëÖØĞ´ÒÔÏÂ·½·¨£¡£¡
         protected void calculateTabRects(int tabPlacement, int tabCount) {
             super.calculateTabRects(tabPlacement, tabCount);
-            setRec(70);  // è®¾ç½®é—´è·
+            setRec(70);  // ÉèÖÃ¼ä¾à
         }
 
         public void setRec(int rec) {
-            rects[0].y = rects[0].y + 100; //é¦–ä¸ªé€‰é¡¹å¡å‘ä¸‹åç§»100
+            rects[0].y = rects[0].y + 100; //Ê×¸öÑ¡Ïî¿¨ÏòÏÂÆ«ÒÆ100
             for (int i = 1; i < rects.length; i++) 
-                rects[i].y = rects[i - 1].y + rec;//ç›¸é‚»é€‰é¡¹å¡çš„é—´éš”ä¸º60 
+                rects[i].y = rects[i - 1].y + rec;//ÏàÁÚÑ¡Ïî¿¨µÄ¼ä¸ôÎª60 
         }
     }
 }

@@ -17,140 +17,140 @@ import java.io.IOException;
 
 public class Register extends JFrame {
 	public Register() {
-		this.setTitle("æ³¨å†Œæ–°è´¦å·");// è®¾ç½®æ ‡é¢˜
+		this.setTitle("×¢²áĞÂÕËºÅ");// ÉèÖÃ±êÌâ
 		this.setSize(530, 420);
-		// è®¾ç½®é»˜è®¤çª—ä½“åœ¨å±å¹•ä¸­å¤®
+		// ÉèÖÃÄ¬ÈÏ´°ÌåÔÚÆÁÄ»ÖĞÑë
 		int x = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int y = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		this.setLocation((x - this.getWidth()) / 2 + 50, (y - this.getHeight()) / 2 + 50);
 		this.setResizable(false);
 
-		// ä¿¡æ¯å¡«å†™é¢æ¿
+		// ĞÅÏ¢ÌîĞ´Ãæ°å
 		JPanel infoPanel = new JPanel();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-		infoPanel.setBorder(BorderFactory.createTitledBorder(border, "è¾“å…¥æ³¨å†Œä¿¡æ¯", TitledBorder.CENTER, TitledBorder.TOP));
-		((TitledBorder) infoPanel.getBorder()).setTitleFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		infoPanel.setBorder(BorderFactory.createTitledBorder(border, "ÊäÈë×¢²áĞÅÏ¢", TitledBorder.CENTER, TitledBorder.TOP));
+		((TitledBorder) infoPanel.getBorder()).setTitleFont(new Font("ËÎÌå", Font.BOLD, 16));
 		this.add(infoPanel, BorderLayout.CENTER);
 		infoPanel.setLayout(null);
 
-		// æ˜µç§°è¾“å…¥åŒº
-		JLabel nicknameLabel = new JLabel("æ˜µç§°:"); // labelæ˜¾ç¤º
+		// êÇ³ÆÊäÈëÇø
+		JLabel nicknameLabel = new JLabel("êÇ³Æ:"); // labelÏÔÊ¾
 		nicknameLabel.setBounds(120, 70, 60, 30);
-		nicknameLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		nicknameLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(nicknameLabel);
-		JTextField nicknameField = new JTextField(); // æ˜µç§°
+		JTextField nicknameField = new JTextField(); // êÇ³Æ
 		nicknameField.setBounds(170, 70, 200, 30);
-		nicknameField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		nicknameField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(nicknameField);
 
-		// å¯†ç è¾“å…¥åŒº
-		JLabel pwdLabel = new JLabel("å¯†ç :");
+		// ÃÜÂëÊäÈëÇø
+		JLabel pwdLabel = new JLabel("ÃÜÂë:");
 		pwdLabel.setBounds(120, 110, 60, 30);
-		pwdLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		pwdLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(pwdLabel);
-		JPasswordField pwdField = new JPasswordField();// å¯†ç æ¡†
+		JPasswordField pwdField = new JPasswordField();// ÃÜÂë¿ò
 		pwdField.setBounds(170, 110, 200, 30);
 		infoPanel.add(pwdField);
 
-		// ç¡®è®¤å¯†ç 
-		JLabel pwdConfirmLabel = new JLabel("ç¡®è®¤å¯†ç :");
+		// È·ÈÏÃÜÂë
+		JLabel pwdConfirmLabel = new JLabel("È·ÈÏÃÜÂë:");
 		pwdConfirmLabel.setBounds(90, 150, 80, 30);
-		pwdConfirmLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		pwdConfirmLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(pwdConfirmLabel);
 		JPasswordField pwdConfirmField = new JPasswordField();
 		pwdConfirmField.setBounds(170, 150, 200, 30);
 		infoPanel.add(pwdConfirmField);
 
-		// æ€§åˆ«è¾“å…¥åŒº
-		JLabel sexLabel = new JLabel("æ€§åˆ«:");
+		// ĞÔ±ğÊäÈëÇø
+		JLabel sexLabel = new JLabel("ĞÔ±ğ:");
 		sexLabel.setBounds(120, 190, 60, 30);
-		sexLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		sexLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(sexLabel);
-		JRadioButton sexMale = new JRadioButton("ç”·", true);  //é»˜è®¤
-		sexMale.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		JRadioButton sexMale = new JRadioButton("ÄĞ", true);  //Ä¬ÈÏ
+		sexMale.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		sexMale.setBounds(180, 190, 60, 30);
 		infoPanel.add(sexMale);
-		JRadioButton sexFemale = new JRadioButton("å¥³");
-		sexFemale.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		JRadioButton sexFemale = new JRadioButton("Å®");
+		sexFemale.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		sexFemale.setBounds(240, 190, 60, 30);
 		infoPanel.add(sexFemale);
-		ButtonGroup buttonGroup = new ButtonGroup();// å•é€‰æŒ‰é’®ç»„
+		ButtonGroup buttonGroup = new ButtonGroup();// µ¥Ñ¡°´Å¥×é
 		buttonGroup.add(sexMale);
 		buttonGroup.add(sexFemale);
 
-		// æ‰‹æœºå·è¾“å…¥åŒº
-		JLabel phoneLabel = new JLabel("æ‰‹æœºå·:"); // labelæ˜¾ç¤º
+		// ÊÖ»úºÅÊäÈëÇø
+		JLabel phoneLabel = new JLabel("ÊÖ»úºÅ:"); // labelÏÔÊ¾
 		phoneLabel.setBounds(110, 230, 60, 30);
-		phoneLabel.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		phoneLabel.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(phoneLabel);
-		JTextField phoneField = new JTextField(); // æ‰‹æœºå·
+		JTextField phoneField = new JTextField(); // ÊÖ»úºÅ
 		phoneField.setBounds(170, 230, 200, 30);
-		phoneField.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
+		phoneField.setFont(new Font("ËÎÌå", Font.BOLD, 16));
 		infoPanel.add(phoneField);
 
-		// æŒ‰é’®é¢æ¿
+		// °´Å¥Ãæ°å
 		JPanel btnPanel = new JPanel();
 		this.add(btnPanel, BorderLayout.SOUTH);
 		btnPanel.setPreferredSize(new Dimension(550, 50));
-		btnPanel.setLayout(null); // è®¾ç½®ä¸ºè‡ªå®šä¹‰ç©ºå¸ƒå±€
+		btnPanel.setLayout(null); // ÉèÖÃÎª×Ô¶¨Òå¿Õ²¼¾Ö
 		btnPanel.setBorder(new EmptyBorder(2, 8, 4, 8));
 
-		// ç¡®è®¤æŒ‰é’®
-		JButton confirmBtn = new JButton("ç¡® è®¤");
+		// È·ÈÏ°´Å¥
+		JButton confirmBtn = new JButton("È· ÈÏ");
 		confirmBtn.setBounds(110, 10, 100, 30);
 		btnPanel.add(confirmBtn);
-		this.setBtnStyle(confirmBtn);// å»ç„¦ç‚¹ï¼Œè®¾èƒŒæ™¯é¢œè‰²ï¼Œè®¾å­—ä½“é¢œè‰²
+		this.setBtnStyle(confirmBtn);// È¥½¹µã£¬Éè±³¾°ÑÕÉ«£¬Éè×ÖÌåÑÕÉ«
 
-		// é‡å¡«æŒ‰é’®
-		JButton clearBtn = new JButton("é‡ å¡«");
+		// ÖØÌî°´Å¥
+		JButton clearBtn = new JButton("ÖØ Ìî");
 		clearBtn.setBounds(330, 10, 100, 30);
 		btnPanel.add(clearBtn);
 		this.setBtnStyle(clearBtn); 
 
-		// å…³é—­çª—å£
+		// ¹Ø±Õ´°¿Ú
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				Register.this.dispose();
 			}
 		});
 
-		// é‡å¡«æŒ‰é’®ç›‘å¬äº‹ä»¶ç»‘å®š
+		// ÖØÌî°´Å¥¼àÌıÊÂ¼ş°ó¶¨
 		clearBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				nicknameField.setText("");
 				pwdField.setText("");
 				pwdConfirmField.setText("");
 				phoneField.setText("");
-				nicknameField.requestFocusInWindow();// ç”¨æˆ·åè·å¾—ç„¦ç‚¹
+				nicknameField.requestFocusInWindow();// ÓÃ»§Ãû»ñµÃ½¹µã
 			}
 		});
 
-		// ç¡®è®¤æŒ‰é’®ç›‘å¬äº‹ä»¶ç»‘å®š
+		// È·ÈÏ°´Å¥¼àÌıÊÂ¼ş°ó¶¨
 		confirmBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				// åˆ¤æ–­å„å­—æ®µæ˜¯å¦ä¸ºç©º
+				// ÅĞ¶Ï¸÷×Ö¶ÎÊÇ·ñÎª¿Õ
 				if (nicknameField.getText().length() == 0 || pwdField.getPassword().length == 0
 						|| pwdConfirmField.getPassword().length == 0 || phoneField.getText().length() == 0) {
-					JOptionPane.showMessageDialog(Register.this, "è¯·å°†ä¿¡æ¯å¡«å†™å®Œæ•´!");
+					JOptionPane.showMessageDialog(Register.this, "Çë½«ĞÅÏ¢ÌîĞ´ÍêÕû!");
 				} else if (pwdField.getPassword().length <= 6) {
-					JOptionPane.showMessageDialog(Register.this, "å¯†ç å¤ªçŸ­ï¼Œä¸èƒ½å°‘äº6ä½!");
+					JOptionPane.showMessageDialog(Register.this, "ÃÜÂëÌ«¶Ì£¬²»ÄÜÉÙÓÚ6Î»!");
 					pwdField.setText("");
 					pwdConfirmField.setText("");
 					pwdField.requestFocusInWindow();
 				} else if (!new String(pwdField.getPassword()).equals(new String(pwdConfirmField.getPassword()))) {
-					JOptionPane.showMessageDialog(Register.this, "ä¸¤æ¬¡è¾“å…¥å¯†ç ä¸ä¸€è‡´!");
+					JOptionPane.showMessageDialog(Register.this, "Á½´ÎÊäÈëÃÜÂë²»Ò»ÖÂ!");
 					pwdField.setText("");
 					pwdConfirmField.setText("");
 					pwdField.requestFocusInWindow();
 				} else if (!Register.this.checkPhoneNumber(phoneField.getText())) {
-					JOptionPane.showMessageDialog(Register.this, "è¯·è¾“å…¥æ­£ç¡®çš„æ‰‹æœºå·ï¼");
+					JOptionPane.showMessageDialog(Register.this, "ÇëÊäÈëÕıÈ·µÄÊÖ»úºÅ£¡");
 					phoneField.setText("");
 					phoneField.requestFocusInWindow();
 				} else {
 					UserInfo user = new UserInfo(nicknameField.getText(), new String(pwdField.getPassword()),
 							sexMale.isSelected() ? Sex.M : Sex.F, phoneField.getText());
 					try {
-						Register.this.register(user);// ä¸€å®šè¦åŠ Register.thisï¼Œåªç”¨this.ä»£è¡¨çš„æ˜¯ActionListenerç±»çš„å®ä¾‹
+						Register.this.register(user);// Ò»¶¨Òª¼ÓRegister.this£¬Ö»ÓÃthis.´ú±íµÄÊÇActionListenerÀàµÄÊµÀı
 					} catch (Exception e3) {
 						e3.printStackTrace();
 					}
@@ -160,40 +160,40 @@ public class Register extends JFrame {
 		this.setVisible(true);
 	}
 
-	// æ³¨å†Œ
+	// ×¢²á
 	private void register(UserInfo user) {
 		Request request = new Request(RequestType.SIGN_UP);
 		request.addData("user", user);
-		// å¦å¼€çº¿ç¨‹å¤„ç†æ³¨å†Œï¼ŒåŸçº¿ç¨‹ç»§ç»­ç›‘å¬äº‹ä»¶è¯·æ±‚
+		// Áí¿ªÏß³Ì´¦Àí×¢²á£¬Ô­Ïß³Ì¼ÌĞø¼àÌıÊÂ¼şÇëÇó
 		new Thread(() -> {
-			// è·å–å“åº”å†…å®¹
+			// »ñÈ¡ÏìÓ¦ÄÚÈİ
 			Response response = null;
 			try {
 				response = ClientSendRequest.sendForResponse(request);
 			} catch (IOException | ClassNotFoundException | InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (response.getResponseStatus() == ResponseStatus.OK) {// æ­£å¸¸å“åº”
+			if (response.getResponseStatus() == ResponseStatus.OK) {// Õı³£ÏìÓ¦
 				if (response.getResponseType() == ResponseType.SUCCESS_SIGN_UP) {
-					JOptionPane.showMessageDialog(Register.this,"æ‚¨å·²æˆåŠŸæ³¨å†Œï¼Œæ‚¨çš„å¸å·ä¸º:" + response.getDataByKey("userID") + "ã€‚", "æ³¨å†ŒæˆåŠŸ",
+					JOptionPane.showMessageDialog(Register.this,"ÄúÒÑ³É¹¦×¢²á£¬ÄúµÄÕÊºÅÎª:" + response.getDataByKey("userID") + "¡£", "×¢²á³É¹¦",
 							JOptionPane.INFORMATION_MESSAGE);
 					this.dispose();
 				} else if (response.getResponseType() == ResponseType.NICKNAME_EXIST) 
-					JOptionPane.showMessageDialog(Register.this, "è¯¥æ˜µç§°å·²è¢«ä½¿ç”¨", "æ˜µç§°é‡å¤", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(Register.this, "¸ÃêÇ³ÆÒÑ±»Ê¹ÓÃ", "êÇ³ÆÖØ¸´", JOptionPane.INFORMATION_MESSAGE);
 			} else 
-				JOptionPane.showMessageDialog(Register.this, "æ³¨å†Œå¤±è´¥ï¼Œè¯·ç¨åå†è¯•ï¼", "ç½‘ç»œé”™è¯¯ï¼", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(Register.this, "×¢²áÊ§°Ü£¬ÇëÉÔºóÔÙÊÔ£¡", "ÍøÂç´íÎó£¡", JOptionPane.ERROR_MESSAGE);
 		}).start();
 	}
 
-	//è®¾ç½®æŒ‰é’®æ ·å¼
+	//ÉèÖÃ°´Å¥ÑùÊ½
     private void setBtnStyle(JButton button){
-        button.setFocusPainted(false);//å»ç„¦ç‚¹
+        button.setFocusPainted(false);//È¥½¹µã
         button.setBackground(new Color(27, 127, 176));
-        button.setFont(new Font("å®‹ä½“", Font.BOLD, 16));
-        button.setForeground(Color.white);//è®¾ç½®å­—ä½“é¢œè‰²
+        button.setFont(new Font("ËÎÌå", Font.BOLD, 16));
+        button.setForeground(Color.white);//ÉèÖÃ×ÖÌåÑÕÉ«
     }
     
-    //åˆ¤æ–­æ‰‹æœºå·æ˜¯å¦æ­£ç¡®
+    //ÅĞ¶ÏÊÖ»úºÅÊÇ·ñÕıÈ·
 	private boolean checkPhoneNumber(String phoneNumber) {
 		return phoneNumber.matches("^1(3\\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8\\d|9\\d)\\d{8}$");
 	}

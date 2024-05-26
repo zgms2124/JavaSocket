@@ -1,0 +1,2 @@
+UserID: 24052522925, Password: 12345678, Nickname: bbb
+UserID: 24052522558, Password: 12345678, Nickname: aaa

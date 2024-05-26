@@ -1,4 +1,4 @@
-/*å®¢æˆ·ç«¯å‘æœåŠ¡å™¨ç«¯å‘é€æ•°æ®ã€‚*/
+/*¿Í»§¶ËÏò·şÎñÆ÷¶Ë·¢ËÍÊı¾İ¡£*/
 
 package Client.Service;
 
@@ -9,29 +9,29 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class ClientSendRequest {
-	// å¦‚ç™»å½•ã€æ³¨å†Œã€æ·»åŠ å¥½å‹
+	// ÈçµÇÂ¼¡¢×¢²á¡¢Ìí¼ÓºÃÓÑ
     public static Response sendForResponse(Request request) throws IOException, ClassNotFoundException, InterruptedException {
         System.out.println("----------------------");
-        //å¾—åˆ°è¾“å‡ºæµ
+        //µÃµ½Êä³öÁ÷
         ObjectOutputStream oos = SingleBuffer.getOos();
-        oos.writeObject(request);//è¾“å‡ºè¯·æ±‚
+        oos.writeObject(request);//Êä³öÇëÇó
         oos.flush();
-        System.out.println("è¯·æ±‚æŠ¥æ–‡å‘é€ç»“æŸ");
-        //å¾—åˆ°è¾“å…¥æµ
+        System.out.println("ÇëÇó±¨ÎÄ·¢ËÍ½áÊø");
+        //µÃµ½ÊäÈëÁ÷
         ObjectInputStream ois = SingleBuffer.getOis();
         Response response = (Response) ois.readObject();
-        System.out.println("è·å–æœåŠ¡å™¨å“åº”çš„å“åº”å½¢å¼ä¸ºï¼š" + response.getResponseType());
+        System.out.println("»ñÈ¡·şÎñÆ÷ÏìÓ¦µÄÏìÓ¦ĞÎÊ½Îª£º" + response.getResponseType());
         System.out.println("----------------------");
         return response;
     }
     
-    // å¦‚ç§èŠã€ç¾¤èŠ
+    // ÈçË½ÁÄ¡¢ÈºÁÄ
     public static void sendNotForResponse(Request request) throws IOException {
         System.out.println("----------------------");
-        //å¾—åˆ°è¾“å‡ºæµ
+        //µÃµ½Êä³öÁ÷
         ObjectOutputStream oos = SingleBuffer.getOos();
         oos.writeObject(request);//
         oos.flush();
-        System.out.println("è¯·æ±‚æŠ¥æ–‡å‘é€ç»“æŸ");
+        System.out.println("ÇëÇó±¨ÎÄ·¢ËÍ½áÊø");
     }
 }

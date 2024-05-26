@@ -11,6 +11,17 @@ public class UserInfo implements Serializable {
     private Sex sex;
     private String phoneNumber;
 
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userID='" + userID + '\'' +
+                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", sex=" + sex +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
+
     public UserInfo(String nickName, String password, Sex sex, String phoneNumber) {
         this.nickName = nickName;
         this.password = password;

@@ -1,52 +1,107 @@
-/*å®¢æˆ·ç«¯åœ¨è¿è¡Œæ—¶çš„ç¼“å­˜æ•°æ®*/
+/*¿Í»§¶ËÔÚÔËĞĞÊ±µÄ»º´æÊı¾İ*/
 package Client.Service;
 
+import SharedModule.GroupInfo;
 import SharedModule.UserInfo;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SingleBuffer {
-	//é¥¿æ±‰å¼åŠ è½½å•ä¾‹å®ä¾‹
+	//¶öººÊ½¼ÓÔØµ¥ÀıÊµÀı
     private static final SingleBuffer singleBuffer = new SingleBuffer();
-    //æœ¬åœ°ç”¨æˆ·ä¿¡æ¯
+
+    //±¾µØÓÃ»§ĞÅÏ¢
     private static UserInfo userInfo;
-    //ä¸æœåŠ¡å™¨é€šä¿¡å¥—æ¥å­—
+    //Óë·şÎñÆ÷Í¨ĞÅÌ×½Ó×Ö
     private static Socket socket;
-    //ä¸æœåŠ¡å™¨é€šä¿¡è¾“å…¥æµ
+    //Óë·şÎñÆ÷Í¨ĞÅÊäÈëÁ÷
     private static ObjectInputStream ois;
-    //ä¸æœåŠ¡å™¨é€šä¿¡è¾“å‡ºæµ
+    //Óë·şÎñÆ÷Í¨ĞÅÊä³öÁ÷
     private static ObjectOutputStream oos;
-    //åœ¨çº¿å¥½å‹åˆ—è¡¨
+    //ÔÚÏßºÃÓÑÁĞ±í
     private static ArrayList<UserInfo> onlineFriends;
-    //å¥½å‹åˆ—è¡¨
+    //ºÃÓÑÁĞ±í
     private static ArrayList<UserInfo> friends;
-    //ç§èŠèŠå¤©è®°å½•
+    // List of group chats which the user is member of
+    private static ArrayList<GroupInfo> groupChats;
+
+    //Ë½ÁÄÁÄÌì¼ÇÂ¼
     private static final HashMap<String, StringBuilder> p2pMessageHistory = new HashMap<>();
-    //æœåŠ¡å™¨IPåœ°å€
+    // ÈºÁÄÁÄÌì¼ÇÂ¼£¬ÒÔÈº×éIDÎªkey
+    private static final HashMap<String, StringBuilder> groupMessageHistory = new HashMap<>();
+
+    //·şÎñÆ÷IPµØÖ·
     private static String SERVER_IP = "127.0.0.1";
-    //æœåŠ¡å™¨ç«¯å£å·
+    //·şÎñÆ÷¶Ë¿ÚºÅ
     private static int SERVER_PORT = 8086;
     static {
-        System.out.println("åˆ›å»ºå¥—æ¥å­—");
+        System.out.println("´´½¨Ì×½Ó×Ö");
         try {
             SingleBuffer.socket = new Socket(SERVER_IP, SERVER_PORT);
-            //å…ˆè·å–è¾“å‡ºæµï¼Œå¦åˆ™ä¼šé˜»å¡
+            //ÏÈ»ñÈ¡Êä³öÁ÷£¬·ñÔò»á×èÈû
             SingleBuffer.oos = new ObjectOutputStream(SingleBuffer.socket.getOutputStream());
-            //å†è·å–è¾“å…¥æµ
+            //ÔÙ»ñÈ¡ÊäÈëÁ÷
             SingleBuffer.ois = new ObjectInputStream(SingleBuffer.socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //æ„é€ å‡½æ•°ç§æœ‰åŒ–ä¿è¯å•ä¾‹
+    //¹¹Ôìº¯ÊıË½ÓĞ»¯±£Ö¤µ¥Àı
     private SingleBuffer(){}
+    // Ìí¼ÓºÍ»ñÈ¡ÈºÁÄÀúÊ·¼ÇÂ¼µÄ·½·¨
+//    public static void putGroupMessageHistory(String groupId, StringBuilder history) {
+//        groupMessageHistory.put(groupId, history);
+//    }
+
+    public static HashMap<String, StringBuilder> getGroupChatMessageHistory() {
+        return groupMessageHistory;
+    }
+
+    public static void setGroupChats(ArrayList<GroupInfo> groupChats) {
+        SingleBuffer.groupChats = groupChats;
+    }
+
+    // Method to get group chat list
+    public static ArrayList<GroupInfo> getGroupChats() {
+        return groupChats;
+    }
+
+    // Method to add a group chat to the user's list of groups
+    public static void addGroupChat(GroupInfo groupChat) {
+        if (!groupChats.contains(groupChat)) {
+            groupChats.add(groupChat);
+        }
+    }
+
+    // Method to retrieve a group chat's info by ID
+    public static GroupInfo getGroupChatById(String groupId) {
+        for (GroupInfo group : groupChats) {
+            if (group.getGroupId().equals(groupId)) {
+                return group;
+            }
+        }
+        return null; // or throw an exception as per your error handling
+    }
+
+
+    // Method to append a message to the group chat history
+    public static void appendToGroupChatHistory(String groupId, String message) {
+        StringBuilder history = groupMessageHistory.get(groupId);
+        if (history != null) {
+            history.append(message).append("\n");
+        } else {
+            history = new StringBuilder(message).append("\n");
+            groupMessageHistory.put(groupId, history);
+        }
+    }
 
     public static void setUserInfo(UserInfo user) {
         SingleBuffer.userInfo = user;
